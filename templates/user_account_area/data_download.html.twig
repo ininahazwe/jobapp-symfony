@@ -1,0 +1,14 @@
+{% extends "base-pdf.html.twig" %}
+
+{% block title %}Liste des données de {{app.user.firstname}} {{app.user.lastname}}{% endblock %}
+{% block body %}
+    <h1>Liste des données de {{app.user.firstname}} {{app.user.lastname}}</h1>
+    <h2>Vos données</h2>
+    <table border=1>
+        <tr>
+            <td>Nom: {{ app.user.lastname }}</td>
+            <td>Prénom: {{ app.user.firstname }}</td>
+            <td>Email: {{ app.user.email }}</td>
+        </tr>
+    </table>
+{% endblock %}

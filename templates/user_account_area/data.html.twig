@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Données personnelles de {{ app.user.firstname }} {{ app.user.lastname }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {% for message in app.flashes('message') %}
+            <div class="col-xs4">
+                <div class="p-3 my-2 rounded-2 success">{{message}}</div>
+            </div>
+        {% endfor %}
+        <div class="col-xs4">
+            <h1>Données personnelles de {{ app.user.firstname }} {{ app.user.lastname }}</h1>
+            <a href="{{ path('profile_data_download') }}" class="btn blue">Télécharger les données</a>
+        </div>
+        <tr>
+            <td>Nom: {{ app.user.lastname }}</td>
+            <td>Prénom: {{ app.user.firstname }}</td>
+            <td>Email: {{ app.user.email }}</td>
+        </tr>
+    </div>
+{% endblock %}

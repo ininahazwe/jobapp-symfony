@@ -1,0 +1,29 @@
+<div class="container mt-5">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-7">
+            <div class="card p-3 py-4">
+                <div class="text-center"> <img src="https://i.imgur.com/bDLhJiP.jpg" width="100" class="rounded-circle"> </div>
+                <div class="text-center mt-3">
+                    <span class="bg-secondary p-1 px-4 rounded text-white">
+                        {% if is_granted('ROLE_RECRUTEUR') %}
+                        Recruteur
+                        {% elseif is_granted('ROLE_CANDIDAT') %}
+                        Candidat
+                        {% endif %}
+                    </span>
+                    <h5 class="mt-2 mb-0">{{ app.user.fullname }}</h5>
+                    <div class="px-4 mt-1">
+                        <p class="fonts">description</p>
+                    </div>
+                    <span>Données personnelles</span>
+                    <div class="buttons">
+                        <a href="{{ path('profile_data') }}" class="btn btn-outline-primary px-4">Voir</a>
+                        <a href="{{ path('profile_modifier') }}" class="btn btn-primary px-4 ms-3">Mettre à jour</a>
+                        <a href="{{ path('profile_data_download') }}" class="btn btn-outline-primary px-4">Télécharger</a>
+                    </div>
+                </div>
+                <p class="text-center pt-3"><a href="{{ path('profile_pass_modifier', {id: user.id}) }}">Changer le mot de passe</a></p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile de{{ app.user.firstname }} {{ app.user.lastname }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="col-xs4">
+            <h1>Merci de complèter votre profile</h1>
+            {{ form(form) }}
+        </div>
+
+    </div>
+{% endblock %}
