@@ -19,8 +19,10 @@ security:
             lazy: true
             provider: app_user_provider
             guard:
+                entry_point: App\Security\SecurityAuthenticator
                 authenticators:
                     - App\Security\SecurityAuthenticator
+                    #- App\Security\TwoFactorsAuthenticator
             logout:
                 path: app_logout
                 # target: app_login

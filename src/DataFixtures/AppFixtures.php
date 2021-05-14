@@ -31,7 +31,7 @@ class AppFixtures extends Fixture
                  ->setUpdatedAt($faker->dateTime)
                  ->setCreatedAt($faker->dateTime)
                  ->setRoles(['ROLE_USER'])
-                 ->setEmail($faker->email)
+                 ->setEmail($faker->unique()->safeEmail)
                  ->setFirstname($faker->firstName)
                  ->setIsTermsClients($faker->randomElement([true, false]))
                  ->setLastConnexionAt($faker->dateTime)
