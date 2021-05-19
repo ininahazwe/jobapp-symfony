@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Candidature à l'offre: {{ annonce.name }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {{ form_start(form) }}
+        <div class="">
+            {{ form_widget(form.title) }}
+            {{ form_row(form.email) }}
+            {{ form_row(form.message) }}
+        </div>
+        <div class="divider"></div>
+        <div class="">
+            <button class="btn small primary">Envoyer</button>
+            <button data-target="modale-contact" class="btn small secondary modal-trigger">Fermer</button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

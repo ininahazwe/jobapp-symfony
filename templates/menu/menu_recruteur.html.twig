@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-custom navbar-mainbg">
-    <a class="navbar-brand navbar-logo" href="{{ path('app_profile') }}">Espace candidat de {{ app.user.fullname }}</a>
+    <a class="navbar-brand navbar-logo" href="{{ path('app_profile') }}">Espace candidat</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <i class="fas fa-bars text-white"></i>
     </button>
@@ -13,7 +13,13 @@
                 <a class="nav-link" href="{{ path('app_profile') }}" onclick="return true"><i class="far fa-address-book"></i>Mon profil</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('app_candidatures') }}" onclick="return true"><i class="far fa-clone"></i>Mes candidatures</a>
+                <a class="nav-link" href="{{ path('app_offres') }}" onclick="return true"><i class="far fa-clone"></i>Mes offres</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('candidature_index') }}" onclick="return true"><i class="far fa-copy"></i>Candidatures</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('app_cvtheque') }}" onclick="return true"><i class="far fa-copy"></i>CVthèque</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a>

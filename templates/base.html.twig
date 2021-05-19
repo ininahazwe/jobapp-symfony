@@ -21,13 +21,8 @@
         {% endblock %}
     </head>
     <body>
-    {% if app.user %}
-        {% if is_granted('ROLE_CANDIDAT') %}
-            {{ include('user_account_area/menu_candidat.html.twig') }}
-        {% else %}
-            {{ include('user_account_area/menu_recruteur.html.twig') }}
-        {% endif %}
-    {% endif %}
+        <header>
+        </header>
             {% block body %}
                 {{ include('partials/flashbag.html.twig') }}
             {% endblock %}
