@@ -13,7 +13,7 @@ trait ResourceId
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private int $id;
+    private $id;
 
     public function getId(): ?int
     {

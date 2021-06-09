@@ -8,49 +8,32 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class FileUploader
 {
+    private $targetDirectory;
     private SluggerInterface $slugger;
-    private string $uploadsDirectory;
 
-    public function __construct(SluggerInterface $slugger,string $uploadsDirectory)
+    public function __construct($targetDirectory, SluggerInterface $slugger)
     {
+        $this->targetDirectory = $targetDirectory;
         $this->slugger = $slugger;
-        $this->uploadsDirectory = $uploadsDirectory;
     }
 
-    /**
-     * Télécharge un fichier et génere son chemin
-     *
-     * @param UploadedFile $file le fichier téléchargé.
-     * @return array{fileName: string, filePath: string}
-     */
-    public function upload(UploadedFile $file): array
+    public function upload(UploadedFile $file): string
     {
-        $fileName = $this->generateUniqFileName($file);
+        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $safeFilename = $this->slugger->slug($originalFilename);
+        $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
 
         try {
-            $file->move($this->uploadsDirectory, $fileName);
-        } catch (FileException $fileException){
-            throw $fileException;
+            $file->move($this->getTargetDirectory(), $fileName);
+        } catch (FileException $e) {
+            // ... handle exception if something happens during file upload
         }
 
-        return [
-            'fileName' => $fileName,
-            'filePath' => $this->uploadsDirectory . $fileName
-        ];
+        return $fileName;
     }
 
-    /**
-     * Génere un unique nom de fichier pour les fichiers téléchargés
-     *
-     * @param UploadedFile $file le fichier téléchargé.
-     * @return string l'unique filename slugged.
-     */
-    public function generateUniqFileName(UploadedFile $file): string
+    public function getTargetDirectory()
     {
-        $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $originalFileNameSlugged = $this->slugger->slug(strtolower($originalFileName));
-        $randomId = uniqid();
-
-        return "{$originalFileNameSlugged}-{$randomId}.{$file->guessExtension()}";
+        return $this->targetDirectory;
     }
 }

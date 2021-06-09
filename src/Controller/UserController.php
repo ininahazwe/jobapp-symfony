@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Entreprise;
+use App\Repository\EntrepriseRecruteurRepository;
+use App\Repository\EntrepriseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,12 +17,15 @@ use Dompdf\Options;
 class UserController extends AbstractController
 {
     #[Route('/', name: 'app_profile')]
-    public function index(): Response
+    public function index(EntrepriseRepository $entrepriseRepository): Response
     {
+        $entreprise = $entrepriseRepository->findAll();
+
         $this->denyAccessUnlessGranted('ROLE_CANDIDAT');
         $user = $this->getUser();
         return $this->render('user/index.html.twig', [
-            'user' => $user
+            'user' => $user,
+            'entreprise' => $entreprise
         ]);
     }
 

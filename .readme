@@ -159,9 +159,29 @@ Voici les
    ```sh
    composer req antishov/doctrine-extensions-bundle
    ```
+
 9. Extension Twig
    ```sh
    composer require twig/string-extra
+   ```
+
+10. Gestionnaire de fichiers Vich et ckeditor
+    ```sh
+    composer require vich/uploader-bundle
+    composer require friendsofsymfony/ckeditor-bundle
+    php bin/console ckeditor:install
+    php bin/console assets:install public
+    ```
+
+11. Voter de sécurisation d'acces aux contenus
+   ```sh
+   symfony console make:voter
+   ```
+
+12. Notifications par mail/SMS
+   ```sh
+   composer require symfony/notifier
+   composer require symfony/twig-pack twig/cssinliner-extra twig/inky-extra
    ```
 
 <!-- USAGE EXAMPLES -->

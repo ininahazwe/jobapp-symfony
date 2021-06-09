@@ -6,6 +6,8 @@
 parameters:
     app.sender_email: '%env(MAILER_SENDER_EMAIL)%'
     app.sender_name: '%env(MAILER_SENDER_NAME)%'
+    #app.path.pages_images: /uploads/images/pages
+    files_directory: '%kernel.project_dir%/public/uploads'
 
 services:
     # default configuration for services in *this* file
@@ -40,3 +42,6 @@ services:
         arguments:
             $senderEmail: '%app.sender_email%'
             $senderName: '%app.sender_name%'
+    App\Service\FileUploader:
+        arguments:
+            $targetDirectory: '%logo_directory%'

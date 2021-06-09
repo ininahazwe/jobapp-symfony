@@ -130,6 +130,18 @@
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.3"
     },
+    "friendsofsymfony/ckeditor-bundle": {
+        "version": "2.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "2.0",
+            "ref": "8eb1cd0962ded6a6d6e1e5a9b6d3e888f9f94ff6"
+        },
+        "files": [
+            "./config/packages/fos_ckeditor.yaml"
+        ]
+    },
     "fzaninotto/faker": {
         "version": "v1.5.0"
     },
@@ -144,6 +156,9 @@
     },
     "guzzlehttp/psr7": {
         "version": "1.8.2"
+    },
+    "jms/metadata": {
+        "version": "2.5.0"
     },
     "knpuniversity/oauth2-client-bundle": {
         "version": "1.20",
@@ -654,6 +669,9 @@
     "symfony/yaml": {
         "version": "v5.2.5"
     },
+    "symfonycasts/verify-email-bundle": {
+        "version": "v1.5.0"
+    },
     "twig/extra-bundle": {
         "version": "v3.3.0"
     },
@@ -662,6 +680,18 @@
     },
     "twig/twig": {
         "version": "v3.3.0"
+    },
+    "vich/uploader-bundle": {
+        "version": "1.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.5",
+            "ref": "c4f5755b37fb65b9c6a3cbdae91205c15a137ed4"
+        },
+        "files": [
+            "./config/packages/vich_uploader.yaml"
+        ]
     },
     "webmozart/assert": {
         "version": "1.10.0"
