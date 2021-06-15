@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile index{% endblock %}
+
+{% block body %}
+    <h1>Profile index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Birthdate</th>
+                <th>IsRqth</th>
+                <th>City</th>
+                <th>Zipcode</th>
+                <th>Diplome</th>
+                <th>Experiences</th>
+                <th>ZoneDeRecherche</th>
+                <th>Metiers</th>
+                <th>IsVisible</th>
+                <th>IsAmenagement</th>
+                <th>Cv</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for profile in profiles %}
+            <tr>
+                <td>{{ profile.description }}</td>
+                <td>{{ profile.birthdate ? profile.birthdate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ profile.isRqth ? 'Yes' : 'No' }}</td>
+                <td>{{ profile.city }}</td>
+                <td>{{ profile.zipcode }}</td>
+                <td>{{ profile.diplome }}</td>
+                <td>{{ profile.experiences }}</td>
+                <td>{{ profile.zoneDeRecherche }}</td>
+                <td>{{ profile.metiers }}</td>
+                <td>{{ profile.isVisible ? 'Yes' : 'No' }}</td>
+                <td>{{ profile.isAmenagement ? 'Yes' : 'No' }}</td>
+                <td>{{ profile.cv }}</td>
+                <td>{{ profile.id }}</td>
+
+                <td>
+                    <a href="{{ path('profile_show', {'id': profile.id}) }}">show</a>
+                    <a href="{{ path('profile_edit', {'id': profile.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="16">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('profile_new') }}">Create new</a>
+{% endblock %}

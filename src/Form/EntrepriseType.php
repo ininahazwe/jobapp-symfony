@@ -28,14 +28,6 @@ class EntrepriseType extends AbstractType
             ->add('city')
             ->add('zipcode')
             ->add('secteur')
-            ->add('offres', EntityType::class, [
-                'label' => 'Formule',
-                'class' => Offre::class,
-
-                // uses the User.username property as the visible option string
-                'choice_label' => 'formule',
-                'multiple' => true
-            ])
         ;
     }
 

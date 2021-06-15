@@ -3,9 +3,23 @@
 {% block title %}Entreprise index{% endblock %}
 
 {% block body %}
-    <h1>Entreprise index</h1>
+<main id="main">
+    <!-- ======= Breadcrumbs ======= -->
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+            <ol>
+                <li><a href="{{ path('app_home') }}">Home</a></li>
+                <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
+                <li><a href="{{ path('entreprise_index') }}">Entreprises</a></li>
+                <li>Répértoire</li>
+            </ol>
+            <h2>Gestion des entreprises</h2>
+        </div>
+    </section><!-- End Breadcrumbs -->
+    <section class="inner-page">
+        <div class="container">
 
-    <table class="table">
+        <table class="table">
         <thead>
             <tr>
                 <th>Name</th>
@@ -15,13 +29,13 @@
                 <th>City</th>
                 <th>Zipcode</th>
                 <th>Secteur</th>
-                 <th>actions</th>
+                <th>actions</th>
             </tr>
         </thead>
         <tbody>
         {% for entreprise in entreprises %}
             <tr>
-                <td>{{ entreprise.name }}</td>
+                <td><a href="{{ path('entreprise_show', {slug: entreprise.slug})}}">{{ entreprise.name }}</a></td>
                 <td>{{ entreprise.description }}</td>
                 <td>
                     {% if entreprise.logo %}
@@ -35,7 +49,6 @@
                 <td>{{ entreprise.zipcode }}</td>
                 <td>{{ entreprise.secteur }}</td>
                 <td>
-                    <a href="{{ path('entreprise_show', {slug: entreprise.slug})}}">show</a>
                     <a href="{{ path('entreprise_edit', {'id': entreprise.id}) }}">edit</a>
                 </td>
             </tr>
@@ -46,6 +59,9 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('entreprise_new') }}">Create new</a>
+            {{ knp_pagination_render(entreprises, 'Pagination/twitter_bootstrap_v4_pagination.html.twig') }}
+        <a class="btn btn-primary" href="{{ path('entreprise_new') }}">Create new</a>
+        </div>
+    </section>
+</main>
 {% endblock %}

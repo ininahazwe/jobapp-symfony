@@ -184,6 +184,12 @@ Voici les
    composer require symfony/twig-pack twig/cssinliner-extra twig/inky-extra
    ```
 
+13. Notifications par mail/SMS
+   ```sh
+   composer require knplabs/knp-paginator-bundle
+   ```
+
+
 <!-- USAGE EXAMPLES -->
 ## Usage
 

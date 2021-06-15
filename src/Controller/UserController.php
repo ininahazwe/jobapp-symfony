@@ -2,8 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Entreprise;
-use App\Repository\EntrepriseRecruteurRepository;
+use App\Form\UserType;
 use App\Repository\EntrepriseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,7 +12,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-#[Route('/user')]
+#[Route('/cms/user')]
 class UserController extends AbstractController
 {
     #[Route('/', name: 'app_profile')]
@@ -21,7 +20,6 @@ class UserController extends AbstractController
     {
         $entreprise = $entrepriseRepository->findAll();
 
-        $this->denyAccessUnlessGranted('ROLE_CANDIDAT');
         $user = $this->getUser();
         return $this->render('user/index.html.twig', [
             'user' => $user,
@@ -29,9 +27,30 @@ class UserController extends AbstractController
         ]);
     }
 
+    #[Route('/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request): Response
+    {
+        $user= $this->getUser();
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('user_creation');
+        }
+
+        return $this->render('user/edit_user.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+        ]);
+    }
+
     #[Route('/pass_modifier', name: 'pass_modifier', methods: ['GET', 'POST'])]
     public function editPass(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         if($request->isMethod('POST')){
 
             $em = $this->getDoctrine()->getManager();

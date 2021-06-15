@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User{% endblock %}
+
+{% block body %}
+    <h1>User</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Roles</th>
+                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+            </tr>
+            <tr>
+                <th>Password</th>
+                <td>{{ user.password }}</td>
+            </tr>
+            <tr>
+                <th>Username</th>
+                <td>{{ user.username }}</td>
+            </tr>
+            <tr>
+                <th>Firstname</th>
+                <td>{{ user.firstname }}</td>
+            </tr>
+            <tr>
+                <th>Lastname</th>
+                <td>{{ user.lastname }}</td>
+            </tr>
+            <tr>
+                <th>LastConnexionAt</th>
+                <td>{{ user.lastConnexionAt ? user.lastConnexionAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Telephone</th>
+                <td>{{ user.telephone }}</td>
+            </tr>
+            <tr>
+                <th>IsTermsClients</th>
+                <td>{{ user.isTermsClients ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>ForgotPasswordToken</th>
+                <td>{{ user.forgotPasswordToken }}</td>
+            </tr>
+            <tr>
+                <th>ForgotPasswordTokenRequestedAt</th>
+                <td>{{ user.forgotPasswordTokenRequestedAt ? user.forgotPasswordTokenRequestedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>ForgotPasswordTokenMustBeVerifiedBefore</th>
+                <td>{{ user.forgotPasswordTokenMustBeVerifiedBefore ? user.forgotPasswordTokenMustBeVerifiedBefore|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>ForgotPasswordTokenVerifiedAt</th>
+                <td>{{ user.forgotPasswordTokenVerifiedAt ? user.forgotPasswordTokenVerifiedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Id</th>
+                <td>{{ user.id }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ user.createdAt ? user.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>UpdatedAt</th>
+                <td>{{ user.updatedAt ? user.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('user_creation_index') }}">back to list</a>
+
+    <a href="{{ path('user_creation_edit', {'id': user.id}) }}">edit</a>
+
+    {{ include('user_creation/_delete_form.html.twig') }}
+{% endblock %}

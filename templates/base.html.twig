@@ -1,38 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale }}">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>{% block title %}Hanci CV - Recrutement de personnes en situation d'handicap{% endblock %}</title>
         {# Run `composer require symfony/webpack-encore-bundle`
            and uncomment the following Encore helpers to start using Symfony UX #}
         <meta charset="utf-8">
-        <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
         <meta content="" name="description">
         <meta content="" name="keywords">
 
         <!-- Favicons -->
-        <link href="template/assets/img/favicon.png" rel="icon">
-        <link href="template/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+        <link href="{{ asset('assets/img/favicon.png') }}" rel="icon">
+        <link href="{{ asset('assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
 
         <!-- Google Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Jost:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
-        {% include 'layouts/_css.html.twig' %}
-
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
+            {% include 'layouts/_css.html.twig' %}
         {% endblock %}
         {% block javascripts %}
+            {% include 'partials/scripts.html.twig' %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
     <body>
-            {% include 'layouts/_header.html.twig' %}
-            {% block body %}
-                {{ include('partials/flashbag.html.twig') }}
-            {% endblock %}
-            {% include 'partials/scripts.html.twig' %}
+        {{ render(controller('App\\Controller\\HomeController::menuIndex')) }}
+        {# {% include 'layouts/_header.html.twig' %}#}
+        {% block body %}
+            {{ include('partials/flashbag.html.twig') }}
+        {% endblock %}
+        {{ render(controller('App\\Controller\\HomeController::footerIndex')) }}
     </body>
 </html>
 

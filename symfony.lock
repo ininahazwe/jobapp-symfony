@@ -160,6 +160,12 @@
     "jms/metadata": {
         "version": "2.5.0"
     },
+    "knplabs/knp-components": {
+        "version": "v3.0.2"
+    },
+    "knplabs/knp-paginator-bundle": {
+        "version": "v5.5.1"
+    },
     "knpuniversity/oauth2-client-bundle": {
         "version": "1.20",
         "recipe": {
@@ -607,6 +613,9 @@
     },
     "symfony/uid": {
         "version": "v5.2.6"
+    },
+    "symfony/ux-turbo": {
+        "version": "v1.3.0"
     },
     "symfony/validator": {
         "version": "4.3",

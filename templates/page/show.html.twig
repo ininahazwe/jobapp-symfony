@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page{% endblock %}
+
+{% block body %}
+<main id="main">
+    <!-- ======= Breadcrumbs ======= -->
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+            <ol>
+                <li><a href="{{ path('app_home') }}">Home</a></li>
+                <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
+                <li><a href="{{ path('page_index') }}">Pages</a></li>
+                <li>Lecture</li>
+            </ol>
+            <h2>{{ page.title }}</h2>
+        </div>
+    </section><!-- End Breadcrumbs -->
+    <section class="inner-page">
+        <div class="container">
+
+            <table class="table">
+        <tbody>
+            <tr>
+                <th>Title</th>
+                <td>{{ page.title }}</td>
+            </tr>
+            <tr>
+                <th>Content</th>
+                <td>{{ page.content|raw }}</td>
+            </tr>
+            <tr>
+                <th>Style</th>
+                <td>{{ page.style }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ page.type }}</td>
+            </tr>
+            <tr>
+                <th>Slug</th>
+                <td>{{ page.slug }}</td>
+            </tr>
+            <tr>
+                <th>Filename</th>
+                <td>{{ page.filename }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+            <a href="{{ path('page_index') }}">back to list</a>
+
+            <a href="{{ path('page_edit', {'id': page.id}) }}">edit</a>
+        </div>
+    </section>
+</main>
+
+    {{ include('page/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <main class="container mt-5">
+        {% for flashError in app.flashes('verify_email_error') %}
+            <div class="alert alert-danger" role="alert">{{ flashError }}</div>
+        {% endfor %}
+
+        <h1>Register</h1>
+
+        {{ form_start(registrationForm) }}
+        {{ form_row(registrationForm.email) }}
+        {{ form_row(registrationForm.username) }}
+        {{ form_row(registrationForm.firstname) }}
+        {{ form_row(registrationForm.lastname) }}
+        {{ form_row(registrationForm.password) }}
+        {{ form_row(registrationForm.agreeTerms) }}
+        <fieldset class="sweet-candy">
+            {{ form_label(registrationForm.phone) }}
+            {{ form_errors(registrationForm.phone) }}
+            {{ form_widget(registrationForm.phone) }}
+        </fieldset>
+        <fieldset class="sweet-candy">
+            {{ form_label(registrationForm.faxNumber) }}
+            {{ form_errors(registrationForm.faxNumber) }}
+            {{ form_widget(registrationForm.faxNumber) }}
+        </fieldset>
+
+        <button type="submit" class="btn btn-lg btn-primary">Register</button>
+        {{ form_end(registrationForm) }}
+    </main>
+    {% endblock %}
+
+{% form_theme registrationForm _self %}
+{% block _registration_form_agreeTerms_label %}
+    <input type="checkbox" id="registration_form_agreeTerms" name="registration_form[agreeTerms]" required="required" class="form-check-input" value="1">
+    <label class="form-check-label required" for="registration_form_agreeTerms">
+        J'accepte les conditions d'utilisation <a href="#">TOTO</a>
+    </label>
+
+{% endblock %}

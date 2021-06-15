@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+    <h1>Profile</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Description</th>
+                <td>{{ app.user.profile.description }}</td>
+            </tr>
+            <tr>
+                <th>Birthdate</th>
+                <td>{{ app.user.profile.birthdate ? app.user.profile.birthdate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>IsRqth</th>
+                <td>{{ app.user.profile.isRqth ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>City</th>
+                <td>{{ app.user.profile.city }}</td>
+            </tr>
+            <tr>
+                <th>Zipcode</th>
+                <td>{{ app.user.profile.zipcode }}</td>
+            </tr>
+            <tr>
+                <th>Diplome</th>
+                <td>{{ app.user.profile.diplome }}</td>
+            </tr>
+            <tr>
+                <th>Experiences</th>
+                <td>{{ app.user.profile.experiences }}</td>
+            </tr>
+            <tr>
+                <th>ZoneDeRecherche</th>
+                <td>{{ app.user.profile.zoneDeRecherche }}</td>
+            </tr>
+            <tr>
+                <th>Metiers</th>
+                <td>{{ app.user.profile.metiers }}</td>
+            </tr>
+            <tr>
+                <th>IsVisible</th>
+                <td>{{ app.user.profile.isVisible ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>IsAmenagement</th>
+                <td>{{ app.user.profile.isAmenagement ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Cv</th>
+                <td>{{ app.user.profile.cv }}</td>
+            </tr>
+            <tr>
+                <th>Id</th>
+                <td>{{ app.user.profile.id }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ app.user.profile.createdAt ? app.user.profile.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>UpdatedAt</th>
+                <td>{{ app.user.profile.updatedAt ? app.user.profile.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('profile_index') }}">back to list</a>
+
+    <a href="{{ path('profile_edit', {'id': profile.id}) }}">edit</a>
+
+    {{ include('profile/_delete_form.html.twig') }}
+
+{% endblock %}

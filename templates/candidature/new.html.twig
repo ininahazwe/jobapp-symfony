@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Candidature{% endblock %}
+
+{% block body %}
+<main id="main">
+    <!-- ======= Breadcrumbs ======= -->
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+            <ol>
+                <li><a href="{{ path('app_home') }}">Home</a></li>
+                <li>Annonce</li>
+            </ol>
+            <h2>Création d'une candidature</h2>
+        </div>
+    </section><!-- End Breadcrumbs -->
+    <section class="inner-page">
+        <div class="container">
+
+        {{ include('candidature/_form.html.twig') }}
+
+        </div>
+    </section>
+</main>
+
+{% endblock %}
+

@@ -30,5 +30,9 @@ trait Timestapable
     {
         return $this->createdAt;
     }
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable('now');
+    }
 }
 

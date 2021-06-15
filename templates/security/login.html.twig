@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+    <main id="main">
+        <!-- ======= Breadcrumbs ======= -->
+        <section id="breadcrumbs" class="breadcrumbs">
+            <div class="container">
+
+                <ol>
+                    <li><a href="{{ path('app_home') }}">Home</a></li>
+                    <li>Login</li>
+                </ol>
+                <h2>Log in</h2>
+
+            </div>
+        </section><!-- End Breadcrumbs -->
+        {% include "partials/flashbag.html.twig" %}
+
+        <div class="container">
+            <form action="{{ path('app_login') }}" method="post" class="">
+            {% if error %}
+                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+
+            {% if app.user %}
+                <div class="mb-3">
+                    You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+                </div>
+            {% endif %}
+
+            <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+                <div class="row">
+                     <label for="inputEmail">Email</label>
+                     <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
+                </div>
+                <div class="row">
+                    <label for="inputPassword">Password</label>
+                    <input type="password" name="password" id="inputPassword" class="form-control" required>
+                </div>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <input type="hidden" name="go_to" value="{{ path('app_profile') }}"/>
+
+                <fieldset class="custom-control custom-switch mb-3">
+                    <input type="checkbox" class="custom-control-input" id="remember_me_checkbox" name="_remember_me">
+                    <label for="remember_me_checkbox" class="custom-control-label">Se souvenir de moi</label>
+                </fieldset>
+                <a href="{{ path('app_forgot_password') }}" class="d-block text-info text-decoration-none mt-2">Mot de passe oublié</a>
+                <button class="btn btn-lg btn-primary mt-5" type="submit">Sign in</button>
+            </form>
+        </div>
+    </main>
+{% endblock %}

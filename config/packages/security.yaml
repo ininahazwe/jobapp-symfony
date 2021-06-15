@@ -34,17 +34,8 @@ security:
 
             remember_me:
                 secret: '%kernel.secret%'
-                name: 'REMEMBERME'
-                lifetime: 86400 # 1 week in seconds
+                lifetime: 604800 # 1 week in seconds
                 path: /
-                samesite: 'lax'
-                httponly: true
-                secure: true
-                always_remember_me: false
-                remember_me_parameter: '_remember_me'
-                token_provider: 'Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider'
-                # where to redirect after logout
-                # target: app_any_route
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
@@ -57,7 +48,12 @@ security:
     access_control:
         #- { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: '%env(SECURE_SCHEME)%' }
         - { path: ^/admin, roles: ROLE_SUPER_ADMIN_HANDICV }
-        - { path: ^/user, roles: ROLE_CANDIDAT }
+        - { path: ^/cms/user, roles: ROLE_CANDIDAT }
+        - { path: ^/cms/page, roles: ROLE_SUPER_ADMIN_HANDICV }
+        - { path: ^/cms/menu, roles: ROLE_SUPER_ADMIN_HANDICV }
+        - { path: ^/cms/entreprise, roles: ROLE_SUPER_RECRUTEUR }
+        - { path: ^/cms/modele-offre-commerciale, roles: ROLE_SUPER_ADMIN_HANDICV }
+
     role_hierarchy:
         ROLE_CANDIDAT:
         ROLE_RECRUTEUR: ROLE_CANDIDAT

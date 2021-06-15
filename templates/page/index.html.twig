@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page index{% endblock %}
+
+{% block body %}
+<main id="main">
+    <!-- ======= Breadcrumbs ======= -->
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+            <ol>
+                <li><a href="{{ path('app_home') }}">Home</a></li>
+                <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
+                <li><a href="{{ path('page_index') }}">Pages</a></li>
+                <li>Répértoire</li>
+            </ol>
+            <h2>Gestion des pages</h2>
+        </div>
+    </section><!-- End Breadcrumbs -->
+    <section class="inner-page">
+        <div class="container">
+             <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Style</th>
+                <th>Type</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for page in pages %}
+            <tr>
+                <td><a href="{{ path('page_show', {slug: page.slug})}}">{{ page.title }}</a></td>
+                <td>{{ page.content|raw() }}</td>
+                <td>{{ page.style }}</td>
+                <td>{{ page.type }}</td>
+                <td>
+                    <a href="{{ path('page_edit', {'id': page.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+                <a class="btn btn-primary" href="{{ path('page_new') }}">Créer une nouvelle page</a>
+        </div>
+    </section>
+</main>
+{% endblock %}

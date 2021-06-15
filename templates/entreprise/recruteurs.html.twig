@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ entreprise.name }}{% endblock %}
+
+{% block body %}
+    <main id="main">
+        <!-- ======= Breadcrumbs ======= -->
+        <section id="breadcrumbs" class="breadcrumbs">
+            <div class="container">
+                <ol>
+                    <li><a href="{{ path('app_home') }}">Home</a></li>
+                    <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
+                    <li><a href="{{ path('entreprise_index') }}">Entreprises</a></li>
+                    <li>Recruteurs</li>
+                </ol>
+                <h2>Gestion des recruteurs</h2>
+            </div>
+        </section><!-- End Breadcrumbs -->
+        <section class="inner-page">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="d-flex flex-column">
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('entreprise_show', {slug: entreprise.slug}) }}">Informations générales</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('entreprise_recruteurs', {id: entreprise.id}) }}">Recruteurs</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('entreprise_offres_commerciales', {id: entreprise.id}) }}">Offres commerciales</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light "><a href="">Factures</a></div></div>
+                        </div>
+                    </div>
+                    <div class="col-md-9 d-flex flex-column">
+                        <div class="float-right">
+                            Nombre de recruteurs : {{ nbRecruteurs }} / {% if nbMaxRecruteurs == 0  %}Illimité{% else %}{{ nbMaxRecruteurs }}{% endif %}
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Prénom</th>
+                                    <th>Email</th>
+                                    <th>Téléphone</th>
+                                    <th>actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {%  if entreprise.recruteurs|length or  entreprise.superRecruteurs|length %}
+                                {% for user in entreprise.recruteurs %}
+                                    <tr>
+                                        <td>{{ user.firstname }}</td>
+                                        <td>{{ user.lastname }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>{{ user.telephone }}</td>
+                                        <td>
+                                            <a href="#">Générer un nouveau mot de passe</a>
+                                            <a> | </a>
+                                            <a href="#">Supprimer</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                {% for user in entreprise.superRecruteurs %}
+                                    <tr>
+                                        <td>{{ user.firstname }}</td>
+                                        <td>{{ user.lastname }}</td>
+                                        <td>{{ user.email }} <b><small>(Super recruteur)</small></b></td>
+                                        <td>{{ user.telephone }}</td>
+                                        <td>
+                                            <a href="#">Générer un nouveau mot de passe</a>
+                                            <a> | </a>
+                                            <a href="#">Supprimer</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="12">no records found</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                        {% if nbRecruteurs < nbMaxRecruteurs %}
+                            <h3>Ajouter un nouveau recruteur</h3>
+                            <form action="{{ path('entreprise_recruteurs_create',{'id' : entreprise.id }) }}" method="post" id="user-form">
+                            {{ form_widget(form) }}
+                            <label for="super_recruteur" class="col-form-label col-sm-2">Super Recruteur</label>
+                            <div class="col-sm-10">
+                            <input type="checkbox" name="super_recruteur" id="super_recruteur"/>
+                            </div>
+                            <br/>
+                            <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}
+

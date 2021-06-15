@@ -1,0 +1,343 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ entreprise.name }}{% endblock %}
+
+{% block body %}
+    <main id="main">
+        <!-- ======= Breadcrumbs ======= -->
+        <section id="breadcrumbs" class="breadcrumbs">
+            <div class="container">
+                <ol>
+                    <li><a href="{{ path('app_home') }}">Home</a></li>
+                    <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
+                    <li><a href="{{ path('entreprise_index') }}">Entreprises</a></li>
+                    <li>Offres</li>
+                </ol>
+                <h2>Offres commerciales</h2>
+            </div>
+        </section><!-- End Breadcrumbs -->
+        <section class="inner-page">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="d-flex flex-column">
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('entreprise_show', {slug: entreprise.slug}) }}">Informations générales</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('entreprise_recruteurs', {id: entreprise.id}) }}">Recruteurs</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('entreprise_offres_commerciales', {id: entreprise.id}) }}">Offres commerciales</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light "><a href="">Factures</a></div></div>
+                        </div>
+                    </div>
+                    <div class="col-md-9 text-center d-flex flex-column">
+                        <div class="gap-2">
+                            <button type="button" class="open-modal btn btn-primary" data-open="modal1">
+                                Ajouter une offre
+                            </button>
+                            <button type="button" class="open-modal btn btn-primary" data-open="modal2">
+                                Ajouter une offre personnalisée
+                            </button>
+                        </div>
+
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Formule</th>
+                                <th>Nombre d'offres</th>
+                                <th>Début de contrat</th>
+                                <th>Fin de contrat</th>
+                                <th>CVthèque</th>
+                                <th>Prix</th>
+                                <th>Nombre de recruteurs</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {%  if entreprise.offres|length %}
+                                {% for offre in entreprise.offres %}
+                                    <tr>
+                                        <td>
+                                            {{ offre.formule }}<br>
+                                            <span
+                                                    {% if offre.isPassed %}
+                                                        class="bg-danger px-2 rounded text-white"
+                                                    {% else %}
+                                                        class="bg-success px-2 rounded text-white"
+                                                    {% endif %}
+                                            >
+                                                {{ offre.getStatusName() }}
+                                            </span>
+                                        </td>
+                                        <td>{{ offre.getNombreOffres() }}</td>
+                                        <td>{{ offre.debutContratAt|date}}</td>
+                                        <td>{{ offre.finContratAt|date }}</td>
+                                        <td>{{ offre.isCvTheque }}</td>
+                                        <td>{{ offre.prix }} €</td>
+                                        <td>{{ offre.getNombreRecruteurs() }}</td>
+                                        <td>
+                                            {%  if offre.isActive() %}
+                                                {% if not offre.isModele()  %}
+                                                <a href="#">Editer</a>
+                                                <a href="#">Supprimer</a>
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="12">no records found</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modal -->
+        <div class="modal" id="modal1" data-animation="slideInOutDown">
+            <div class="modal-dialog">
+                <header class="modal-header">
+                    Ajouter une offre
+                    <button class="close-modal" aria-label="close modal" data-close>
+                        ✕
+                    </button>
+                </header>
+                <section class="modal-content">
+
+                    <form method="post" action="{{ path('entreprise_save_offre',{id : entreprise.id}) }}" >
+                    <div class="input-group">
+                        <select class="custom-select" name="modeleId" id="inputGroupSelect04">
+                            <option selected>Choose...</option>
+                            {% for modele in modeles %}
+                                <option value="{{ modele.id }}">{{ modele.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">Ajouter</button>
+                        </div>
+                    </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+
+        <div class="modal" id="modal2" data-animation="slideInOutDown">
+            <div class="modal-dialog">
+                <header class="modal-header">
+                    Ajouter une offre personnalisée
+                    <button class="close-modal" aria-label="close modal" data-close>
+                        ✕
+                    </button>
+                </header>
+                <section class="modal-content">
+                    {{ include('offre/_form.html.twig') }}
+                </section>
+            </div>
+        </div>
+
+    </main>
+
+    <script type="application/javascript">
+        const openEls = document.querySelectorAll("[data-open]");
+        const closeEls = document.querySelectorAll("[data-close]");
+        const isVisible = "is-visible";
+
+        for (const el of openEls) {
+            el.addEventListener("click", function() {
+                const modalId = this.dataset.open;
+                document.getElementById(modalId).classList.add(isVisible);
+            });
+        }
+
+        for (const el of closeEls) {
+            el.addEventListener("click", function() {
+                this.parentElement.parentElement.parentElement.classList.remove(isVisible);
+            });
+        }
+
+        document.addEventListener("click", e => {
+            if (e.target == document.querySelector(".modal.is-visible")) {
+                document.querySelector(".modal.is-visible").classList.remove(isVisible);
+            }
+        });
+
+        document.addEventListener("keyup", e => {
+            // if we press the ESC
+            if (e.key == "Escape" && document.querySelector(".modal.is-visible")) {
+                document.querySelector(".modal.is-visible").classList.remove(isVisible);
+            }
+        });
+
+    </script>
+
+    <style>
+        /* RESET RULES
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+        :root {
+            --lightgray: #efefef;
+            --blue: steelblue;
+            --white: #fff;
+            --black: rgba(0, 0, 0, 0.8);
+            --bounceEasing: cubic-bezier(0.51, 0.92, 0.24, 1.15);
+        }
+        .btn-group {
+            text-align: center;
+        }
+        /* MODAL
+        –––––––––––––––––––––––––––––––––––––––––––––––––– */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: var(--black);
+            cursor: pointer;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.35s ease-in;
+        }
+
+        .modal.is-visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-dialog {
+            position: relative;
+            max-width: 800px;
+            max-height: 80vh;
+            border-radius: 5px;
+            background: var(--white);
+            overflow: auto;
+            cursor: default;
+        }
+
+        .modal-dialog > * {
+            padding: 1rem;
+        }
+
+        .modal-header,
+        .modal-footer {
+            background: var(--lightgray);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header .close-modal {
+            font-size: 1.5rem;
+        }
+
+        .modal p + p {
+            margin-top: 1rem;
+        }
+
+
+        /* ANIMATIONS
+        –––––––––––––––––––––––––––––––––––––––––––––––––– */
+        [data-animation] .modal-dialog {
+            opacity: 0;
+            transition: all 0.5s var(--bounceEasing);
+        }
+
+        [data-animation].is-visible .modal-dialog {
+            opacity: 1;
+            transition-delay: 0.2s;
+        }
+
+        [data-animation="slideInOutDown"] .modal-dialog {
+            transform: translateY(100%);
+        }
+
+        [data-animation="slideInOutTop"] .modal-dialog {
+            transform: translateY(-100%);
+        }
+
+        [data-animation="slideInOutLeft"] .modal-dialog {
+            transform: translateX(-100%);
+        }
+
+        [data-animation="slideInOutRight"] .modal-dialog {
+            transform: translateX(100%);
+        }
+
+        [data-animation="zoomInOut"] .modal-dialog {
+            transform: scale(0.2);
+        }
+
+        [data-animation="rotateInOutDown"] .modal-dialog {
+            transform-origin: top left;
+            transform: rotate(-1turn);
+        }
+
+        [data-animation="mixInAnimations"].is-visible .modal-dialog {
+            animation: mixInAnimations 2s 0.2s linear forwards;
+        }
+
+        [data-animation="slideInOutDown"].is-visible .modal-dialog,
+        [data-animation="slideInOutTop"].is-visible .modal-dialog,
+        [data-animation="slideInOutLeft"].is-visible .modal-dialog,
+        [data-animation="slideInOutRight"].is-visible .modal-dialog,
+        [data-animation="zoomInOut"].is-visible .modal-dialog,
+        [data-animation="rotateInOutDown"].is-visible .modal-dialog {
+            transform: none;
+        }
+
+        @keyframes mixInAnimations {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            10% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: rotate(20deg);
+            }
+
+            30% {
+                transform: rotate(-20deg);
+            }
+
+            40% {
+                transform: rotate(15deg);
+            }
+
+            50% {
+                transform: rotate(-15deg);
+            }
+
+            60% {
+                transform: rotate(10deg);
+            }
+
+            70% {
+                transform: rotate(-10deg);
+            }
+
+            80% {
+                transform: rotate(5deg);
+            }
+
+            90% {
+                transform: rotate(-5deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+    </style>
+{% endblock %}
+

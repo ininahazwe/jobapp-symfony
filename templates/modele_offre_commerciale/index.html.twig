@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ModeleOffreCommerciale index{% endblock %}
+
+{% block body %}
+<main id="main">
+    <!-- ======= Breadcrumbs ======= -->
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+            <ol>
+                <li><a href="{{ path('app_home') }}">Home</a></li>
+                <li>Dashboard</li>
+            </ol>
+            <h2>Modèles Offres Commerciales</h2>
+
+        </div>
+    </section><!-- End Breadcrumbs -->
+    <section class="inner-page">
+        <div class="container">
+
+         <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Nombre_offres</th>
+                <th>IsCvTheque</th>
+                <th>DureeContrat</th>
+                <th>Prix</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for modele_offre_commerciale in modele_offre_commerciales %}
+            <tr>
+                <td>{{ modele_offre_commerciale.id }}</td>
+                <td>{{ modele_offre_commerciale.name }}</td>
+                <td>{{ modele_offre_commerciale.nombreOffres }}</td>
+                <td>{{ modele_offre_commerciale.isCvTheque ? 'Yes' : 'No' }}</td>
+                <td>{{ modele_offre_commerciale.dureeContrat }}</td>
+                <td>{{ modele_offre_commerciale.prix }}</td>
+                <td>
+                    <a href="{{ path('modele_offre_commerciale_show', {'id': modele_offre_commerciale.id}) }}">show</a>
+                    <a href="{{ path('modele_offre_commerciale_edit', {'id': modele_offre_commerciale.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+            <a class="btn btn-primary" href="{{ path('modele_offre_commerciale_new') }}">Create new</a>
+        </div>
+    </section>
+</main>
+{% endblock %}

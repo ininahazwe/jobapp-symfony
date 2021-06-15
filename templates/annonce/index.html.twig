@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Offres d'emploi{% endblock %}
+
+{% block body %}
+<main id="main">
+    <!-- ======= Breadcrumbs ======= -->
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+            <ol>
+                <li><a href="{{ path('app_home') }}">Home</a></li>
+                <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
+                <li><a href="{{ path('annonce_index') }}">Offres d'emploi</a></li>
+                <li>Répértoire</li>
+            </ol>
+            <h2>Gestion des offres d'emploi</h2>
+        </div>
+    </section><!-- End Breadcrumbs -->
+    <section class="inner-page">
+        <div class="container">
+            Nombre total : {{ annonces.totalItemCount }}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Date de publication</th>
+                        <th>Active</th>
+                        <th>actions</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                {% for annonce in annonces %}
+                    <tr>
+                        <td><a href="{{ path('annonce_show', {slug: annonce.slug})}}">{{ annonce.name }}</a></td>
+                        <td>{{ annonce.description }}</td>
+                        <td>{{ annonce.createdAt|date('d/m/Y') }}</td>
+                        <td>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="customSwitch1" {{ (annonce.isActive) ? 'checked' : ''}} data-id="{{annonce.id}}">
+                                <label class="custom-control-label" for="customSwitch1">
+                                    {% if annonce.isActive  ? 'checked'%}
+                                    publiée
+                                    {% else %}
+                                       non publiée
+                                    {% endif %}
+                                </label>
+                            </div>
+                        </td>
+                        <td>
+                           <a href="{{ path('annonce_edit', {'id': annonce.id}) }}">edit</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">no records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {{ knp_pagination_render(annonces, 'Pagination/twitter_bootstrap_v4_pagination.html.twig') }}
+            <a class="btn btn-primary" href="{{ path('annonce_new') }}">Créer une offre d'emploi</a>
+        </div>
+    </section>
+</main>
+{% endblock %}

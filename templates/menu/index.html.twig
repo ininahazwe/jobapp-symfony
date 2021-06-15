@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Menu index{% endblock %}
+
+{% block body %}
+<main id="main">
+    <!-- ======= Breadcrumbs ======= -->
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+            <ol>
+                <li><a href="{{ path('app_home') }}">Home</a></li>
+                <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
+                <li>Menus</li>
+            </ol>
+            <h2>Gestion de menus</h2>
+        </div>
+    </section><!-- End Breadcrumbs -->
+    <section class="inner-page">
+        <div class="container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Link</th>
+                        <th>Display_order</th>
+                        <th>Niveau</th>
+                        <th>Type</th>
+                        <th>actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for menu in menus %}
+                    <tr>
+                        <td>{{ menu.name }}</td>
+                        <td>{{ menu.link }}</td>
+                        <td>{{ menu.displayOrder }}</td>
+                        <td>{{ menu.niveau }}</td>
+                        <td>{{ menu.type }}</td>
+                        <td>
+                            <a href="{{ path('menu_delete', {'id': menu.id}) }}">Delete</a>
+                            <a href="{{ path('menu_edit', {'id': menu.id}) }}">edit</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="8">no records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {{ knp_pagination_render(menus, 'Pagination/twitter_bootstrap_v4_pagination.html.twig') }}
+            <a class="btn btn-primary" href="{{ path('menu_new') }}">Create new</a>
+        </div>
+    </section>
+</main>
+{% endblock %}

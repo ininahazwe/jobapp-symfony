@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Candidature index{% endblock %}
+
+{% block body %}
+<main id="main">
+    <!-- ======= Breadcrumbs ======= -->
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+            <ol>
+                <li><a href="{{ path('app_home') }}">Home</a></li>
+                <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
+                <li>Candidatures</li>
+            </ol>
+            <h2>Gestion des candidatures</h2>
+        </div>
+    </section><!-- End Breadcrumbs -->
+    <section class="inner-page">
+        <div class="container">
+
+            <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Motivation</th>
+                <th>CreatedAt</th>
+                <th>UpdatedAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for candidature in candidatures %}
+            <tr>
+                <td>{{ candidature.name }}</td>
+                <td>{{ candidature.motivation }}</td>
+                <td>{{ candidature.createdAt ? candidature.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ candidature.updatedAt ? candidature.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('candidature_show', {'id': candidature.id}) }}">show</a>
+                    <a href="{{ path('candidature_edit', {'id': candidature.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+            <a class="btn btn-primary" href="{{ path('candidature_new') }}">Create new</a>
+        </div>
+    </section>
+</main>
+{% endblock %}

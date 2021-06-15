@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Offre d'emploi | {{ annonce.name }}{% endblock %}
+
+{% block body %}
+    <main id="main">
+    <!-- ======= Breadcrumbs ======= -->
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+            <ol>
+                <li><a href="{{ path('app_home') }}">Home</a></li>
+                <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
+                <li><a href="{{ path('annonce_index') }}">Offres d'emploi</a></li>
+                <li>Lecture</li>
+            </ol>
+            <h2>{{ annonce.name }}</h2>
+        </div>
+    </section><!-- End Breadcrumbs -->
+    <section class="inner-page">
+
+        <div class="container">
+            <h1>{{ annonce.author.fullname }} cherche un.e {{ annonce.name }}</h1>
+
+            <div class="portfolio-info">
+                <h3>Project information</h3>
+                <ul>
+                    <li><strong>Titre du poste</strong>: {{ annonce.name }}</li>
+                    <li><strong>Client</strong>: ASU Company</li>
+                    <li><strong>Date de publication</strong>: {{ annonce.createdAt|date }}</li>
+                 </ul>
+            </div>
+            <div class="portfolio-description">
+                <h2>Description</h2>
+                <p>{{ annonce.description }}</p>
+            </div>
+            <a class="btn btn-primary" href="{{ path('candidature_new') }}">Envoyer sa candidature</a>
+            {% if is_granted('annonce_edit', annonce) %}
+                {% if annonce.isActive == false %}
+                    {# TODO LINK publication des offres #}
+                    <a href="#">Publier</a>
+                {% endif %}
+                <a href="{{ path('annonce_edit', {'id': annonce.id}) }}">edit</a>
+                {{ include('annonce/_delete_form.html.twig') }}
+            {% endif %}
+        </div>
+    </section>
+</main>
+{% endblock %}

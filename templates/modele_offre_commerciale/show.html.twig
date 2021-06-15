@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ModeleOffreCommerciale{% endblock %}
+
+{% block body %}
+<main id="main">
+    <!-- ======= Breadcrumbs ======= -->
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+            <ol>
+                <li><a href="{{ path('app_home') }}">Home</a></li>
+                <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
+                <li><a href="{{ path('modele_offre_commerciale_index') }}">Offres commerciales</a></li>
+                <li>Lecture</li>
+            </ol>
+            <h2>Modèle {{ modele_offre_commerciale.name }}</h2>
+
+        </div>
+    </section><!-- End Breadcrumbs -->
+    <section class="inner-page">
+        <div class="container">
+
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ modele_offre_commerciale.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nombre_offres</th>
+                        <td>{{ modele_offre_commerciale.nombreOffres }}</td>
+                    </tr>
+                    <tr>
+                        <th>IsCvTheque</th>
+                        <td>{{ modele_offre_commerciale.isCvTheque ? 'Yes' : 'No' }}</td>
+                    </tr>
+                    <tr>
+                        <th>DureeContrat</th>
+                        <td>{{ modele_offre_commerciale.dureeContrat }}</td>
+                    </tr>
+                    <tr>
+                        <th>Prix</th>
+                        <td>{{ modele_offre_commerciale.prix }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <di>
+                <a href="{{ path('modele_offre_commerciale_edit', {'id': modele_offre_commerciale.id}) }}">edit</a>
+                {{ include('modele_offre_commerciale/_delete_form.html.twig') }}
+            </di>
+        </div>
+    </section>
+</main>
+
+{% endblock %}

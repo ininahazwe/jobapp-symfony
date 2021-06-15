@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ app.user.fullname|capitalize }} | Profile{% endblock %}
+
+{% block body %}
+    <main id="main">
+        <!-- ======= Breadcrumbs ======= -->
+        <section id="breadcrumbs" class="breadcrumbs">
+            <div class="container">
+                <ol>
+                    <li><a href="{{ path('app_home') }}">Home</a></li>
+                    <li>Dashboard</li>
+                </ol>
+                <h2>Tableau de bord</h2>
+
+            </div>
+        </section><!-- End Breadcrumbs -->
+        <section class="inner-page">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-9">
+                        <h3>Gestion des tâches</h3>
+                        {% if app.user.isSuperAdmin() %}
+                        <div class="row row-cols-3 g-lg-3">
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('menu_index') }}">Menus</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('page_index') }}">Pages</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('entreprise_index') }}">Entreprises</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('annonce_index') }}">Annonces</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('candidature_index') }}">Candidatures</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('modele_offre_commerciale_index') }}">Modèle offres commerciales</a></div></div>
+                        </div>
+                        {% endif %}
+                        {% if app.user.isSuperRecruteur() %}
+                        <div class="row row-cols-3 g-lg-3">
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('annonce_index') }}">Annonces</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('candidature_index') }}">Candidatures</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('entreprise_index') }}">Entreprises</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('user_creation') }}">Recruteurs</a></div></div>
+                        </div>
+                        {% endif %}
+                        {% if app.user.isRecruteur() %}
+                        <div class="row row-cols-3 g-lg-3">
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('annonce_index') }}">Annonces</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('candidature_index') }}">Candidatures</a></div></div>
+                        </div>
+                        {% endif %}
+                        {% if app.user.isCandidat() %}
+                        <div class="row row-cols-3 g-lg-3">
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('menu_index') }}">Mes candidatures</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('menu_index') }}">Offres en adéquation avec mon profil</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('menu_index') }}">Offres sélectionnées</a></div></div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3 text-center d-flex flex-column">
+                        <h3>Profile</h3>
+                        <div class="text-center p-3">
+                            <img src="https://i.imgur.com/bDLhJiP.jpg" width="100" class="rounded-circle">
+                        </div>
+                        <div>
+                            <span class="bg-secondary p-1 px-4 rounded text-white">
+                            {{ app.user.getRoleName() }}
+                            </span>
+                        </div>
+                        <b class="p-1">{{ app.user.getFullname()|upper }}</b>
+                        <a href="{{ path('app_profile_edit') }}" class="btn btn-primary px-4 ms-3">Modifier mes infos</a>
+                        <p class="text-center pt-3"><a href="{{ path('pass_modifier', {id: user.id}) }}">Changer le mot de passe</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}
