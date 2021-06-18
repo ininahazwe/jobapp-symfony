@@ -14,7 +14,7 @@ class OffreType extends AbstractType
     {
         $builder
             ->add('formule')
-            ->add('slug')
+
             ->add('nombre_offres')
             ->add('debutContratAt', DateTimeType::class, [
                 'date_widget' => 'single_text',

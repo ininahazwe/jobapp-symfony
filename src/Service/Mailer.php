@@ -27,7 +27,7 @@ class Mailer
     }
 
     /**
-     * @param array<mixed>   $arguments
+     * @param array $arguments
      * @throws TransportExceptionInterface
      */
     public function send(array $arguments): void

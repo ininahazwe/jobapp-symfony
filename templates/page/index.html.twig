@@ -17,13 +17,12 @@
         </div>
     </section><!-- End Breadcrumbs -->
     <section class="inner-page">
-        <div class="container">
+        <div class="container js-filter">
             <div class="row">
-                <div class="col-md-3">
-                    {% include 'page/filtrer.html.twig' with {form: form} only %}
+                <div class="col-md-3 js-filter-form">
+                    {{ form(form) }}
                 </div>
                 <div class="col-md-9">
-
                     <table class="table">
                         <thead>
                         <tr>
@@ -60,11 +59,10 @@
                         {% endfor %}
                         </tbody>
                     </table>
-                    {{ knp_pagination_render(pages, 'Pagination/twitter_bootstrap_v4_pagination.html.twig') }}
+                    {#{{ knp_pagination_render(pages, 'Pagination/twitter_bootstrap_v4_pagination.html.twig') }}#}
                     <a class="btn btn-primary" href="{{ path('page_new') }}">Créer une nouvelle page</a>
                 </div>
             </div>
-
         </div>
     </section>
 </main>

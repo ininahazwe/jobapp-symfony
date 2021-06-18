@@ -128,7 +128,7 @@ class UserCreationController extends AbstractController
 
         $this->addFlash('success', 'Vous avez bien activé votre compte');
 
-        return $this->render('home/index.html.twig');
+        return $this->render('security/login.html.twig');
     }
 
 }

@@ -56,6 +56,7 @@ class HomeController extends AbstractController
         ]);
     }
 
+
     #[Route('/{slug}', name:'page_sss')]
     public function page($slug): Response
     {

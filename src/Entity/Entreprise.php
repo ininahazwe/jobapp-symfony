@@ -12,6 +12,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=EntrepriseRepository::class)
+ * @ORM\Table(name="entreprise", indexes={@ORM\Index(columns={"name", "description"}, flags={"fulltext"})})
  */
 class Entreprise
 {

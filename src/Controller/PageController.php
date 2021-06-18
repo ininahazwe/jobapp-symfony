@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Data\SearchData;
 use App\Entity\File;
 use App\Entity\Page;
 use App\Form\PageType;
@@ -16,15 +15,18 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/cms/page')]
 class PageController extends AbstractController
 {
-    #[Route('/', name: 'page_index', methods: ['GET'])]
+    #[Route('/', name: 'page_index', methods: ['GET', 'POST'])]
     public function index(PageRepository $pageRepository, Request $request): Response
     {
-        $data = new SearchData();
-        $data->page = $request->get('page', 1);
-        $form = $this->createForm(SearchForm::class, $data);
+        $pages = $pageRepository->search();
+        $form = $this->createForm(SearchForm::class);
         $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $pages = $pageRepository->search(
+                $form->get('mots')->getData(),
+            );
+        }
 
-        $pages = $pageRepository->findSearch($data);
         return $this->render('page/index.html.twig', [
             'pages' => $pages,
             'form' => $form->createView()

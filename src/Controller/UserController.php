@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Route('/cms/user')]
 class UserController extends AbstractController
@@ -62,6 +63,13 @@ class UserController extends AbstractController
             $em = $this->getDoctrine()->getManager();
 
             $user = $this->getUser();
+
+            $oldPassword = $request->request->get('oldPass');
+            if (!$passwordEncoder->isPasswordValid($user, $oldPassword)){
+                $this->addFlash('message', 'Mot de passe n\'est pas correct');
+
+                return $this->redirectToRoute('pass_modifier');
+            }
 
             // On vérifie si les 2 mots de passe sont identiques
             if($request->request->get('password') == $request->request->get('password2')){

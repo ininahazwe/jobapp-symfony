@@ -61,7 +61,7 @@ class Menu
     private string $type;
 
     /**
-     * @ORM\OneToOne(targetEntity=Menu::class, inversedBy="child_menu", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=Menu::class, cascade={"persist", "remove"})
      */
     private ?Menu $child_menu;
 

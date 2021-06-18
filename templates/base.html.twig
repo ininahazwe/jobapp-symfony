@@ -28,11 +28,11 @@
     </head>
     <body>
         {{ render(controller('App\\Controller\\HomeController::menuIndex')) }}
-        {# {% include 'layouts/_header.html.twig' %}#}
         {% block body %}
             {{ include('partials/flashbag.html.twig') }}
         {% endblock %}
         {{ render(controller('App\\Controller\\HomeController::footerIndex')) }}
+        {# {{ render(controller('App\\Controller\\HomeController::bodyIndex')) }} #}
     </body>
 </html>
 

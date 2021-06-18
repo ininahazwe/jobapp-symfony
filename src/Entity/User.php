@@ -193,7 +193,6 @@ class User implements UserInterface
     {
         $this->isTermsClients = false;
         $this->roles = ['ROLE_CANDIDAT'];
-        $this->lastConnexionAt = new \DateTime('now');
         $this->annonces = new ArrayCollection();
         $this->candidatures = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable('now');

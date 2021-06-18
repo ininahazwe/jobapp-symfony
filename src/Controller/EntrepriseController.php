@@ -2,22 +2,28 @@
 
 namespace App\Controller;
 
+use App\Data\SearchData;
 use App\Entity\Entreprise;
 use App\Entity\File;
 use App\Entity\Offre;
 use App\Entity\User;
 use App\Form\EntrepriseType;
 use App\Form\OffreType;
+use App\Form\SearchForm;
 use App\Form\UserType;
 use App\Repository\EntrepriseRepository;
 use App\Repository\ModeleOffreCommercialeRepository;
 use App\Repository\UserRepository;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Message;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -27,13 +33,18 @@ class EntrepriseController extends AbstractController
     #[Route('/', name: 'entreprise_index', methods: ['GET'])]
     public function index(Request $request, EntrepriseRepository $entrepriseRepository, PaginatorInterface $paginator): Response
     {
-        $entreprisedata = $entrepriseRepository->getAllEntreprisesAdmin($this->getUser()->getId());
+        /*$data = new SearchData();
+        $data->page = $request->get('page', 1);
+        $form = $this->createForm(SearchForm::class, $data);
+        $form->handleRequest($request);*/
 
-        $entreprises = $paginator->paginate(
+        //$entreprises = $entrepriseRepository->getAllEntreprisesAdmin($this->getUser()->getId());
+        $entreprises = $entrepriseRepository->findAll();
+        /*$entreprises = $paginator->paginate(
             $entreprisedata,
             $request->query->getInt('page', 1),
             10
-        );
+        );*/
 
         if($this->getUser()->isSuperRecruteur()){
             if(count($entreprises) == 1 ){
@@ -44,6 +55,7 @@ class EntrepriseController extends AbstractController
 
         return $this->render('entreprise/index.html.twig', [
             'entreprises' => $entreprises,
+            //'form' => $form->createView()
         ]);
     }
 
@@ -170,51 +182,77 @@ class EntrepriseController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     */
     #[Route('/{id}/recruteur/create', name: 'entreprise_recruteurs_create', methods: ['GET', 'POST'])]
-    public function recruteurCreate(Request $request, Entreprise $entreprise, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function recruteurCreate(Request $request, Entreprise $entreprise, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder, MailerInterface $mailer): Response
     {
         $userExist = $userRepository->findOneBy(['email' =>$request->get('user[email]')]);
-
+        $password = $userRepository->genererMDP();
         if ($userExist){
             $user = $userExist;
         }else{
             $user = new User();
         }
 
-        $entityManager = $this->getDoctrine()->getManager();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
+        $entityManager = $this->getDoctrine()->getManager();
 
-         if ($form->isSubmitted() && $form->isValid()) {
-             $superRecruteur = $request->get('super_recruteur');
-             dd($request->get('user[email]'));
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $superRecruteur = $request->get('super_recruteur');
+            if (!$userExist) {
+                $user->setPassword(
+                    $passwordEncoder->encodePassword(
+                        $user,
+                        $password
+                    )
+                );
+            }
+            $user->setActivationToken(md5(uniqid()));
 
 
-             if(!$userExist) {
-                 $user->setPassword(
-                     $passwordEncoder->encodePassword(
-                         $user,
-                         $userRepository->genererMDP()
-                     )
-                 );
-             }
 
-             if ($superRecruteur){
-                 $entreprise->addSuperRecruteur($user);
-                 $user->setRoles(['ROLE_SUPER_RECRUTEUR']);
-             }else{
-                 $entreprise->addRecruteur($user);
-                 $user->setRoles(['ROLE_RECRUTEUR']);
-             }
-             $entityManager->persist($user);
-             $entityManager->persist($entreprise);
+            if ($superRecruteur){
+                $entreprise->addSuperRecruteur($user);
+                $user->setRoles(['ROLE_SUPER_RECRUTEUR']);
+            }else{
+                $entreprise->addRecruteur($user);
+                $user->setRoles(['ROLE_RECRUTEUR']);
+            }
 
-             $entityManager->flush();
+            $entityManager->persist($user);
+            $entityManager->persist($entreprise);
+            $entityManager->flush();
 
-             return $this->redirect($this->generateUrl('entreprise_recruteurs',['id' => $entreprise->getId()]));
-         }
+            $email = (new TemplatedEmail())
+                ->from('haha@gmail.com')
+                ->to($user->getEmail())
+                ->subject('Activation de compte!')
+                ->text('Sending emails is fun again!')
+                ->htmlTemplate('emails/creation.html.twig')
+                ->context([
+                    'password' => $password, 'user' => $user,
+                    'token' => $user->getActivationToken()
+                ])
+            ;
 
-        return $this->redirect($this->generateUrl('entreprise_recruteurs',['id' => $entreprise->getId()]));
+            $mailer->send($email);
+
+            $this->addFlash('success', 'Le compte a été créé');
+            return $this->redirectToRoute('entreprise_recruteurs',['id' => $entreprise->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        $response = new Response(null, $form->isSubmitted() ? 422 : 200);
+
+        return $this->render('user_creation/index.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+        ], $response);
+
+        //return $this->redirect($this->generateUrl('entreprise_recruteurs',['id' => $entreprise->getId()]));
     }
     #[Route('/{id}', name: 'entreprise_delete', methods: ['POST'])]
     public function delete(Request $request, Entreprise $entreprise): Response
@@ -246,7 +284,6 @@ class EntrepriseController extends AbstractController
             return new JsonResponse(['error' => 'Token Invalide'], 400);
         }
     }
-
 
     /**
      * @param $id

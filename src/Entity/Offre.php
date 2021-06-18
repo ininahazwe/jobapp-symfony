@@ -49,7 +49,7 @@ class Offre
     private string $facture;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Entreprise::class, inversedBy="entrepriseOffres")
+     * @ORM\ManyToOne(targetEntity=Entreprise::class, inversedBy="Offres")
      */
     private Entreprise $entreprise;
 

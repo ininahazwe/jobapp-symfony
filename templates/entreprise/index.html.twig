@@ -18,50 +18,55 @@
     </section><!-- End Breadcrumbs -->
     <section class="inner-page">
         <div class="container">
+            {% for message in app.flashes('info') %}
+                <div class="alert alert-info">{{ message }}</div>
+            {% endfor %}
             <div class="row">
-
-
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Logo</th>
-                            <th>Address</th>
-                            <th>City</th>
-                            <th>Zipcode</th>
-                            <th>Secteur</th>
-                            <th>actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for entreprise in entreprises %}
+                    <div class="col-md-3 js-filter-form">
+                        {#{% include 'search/filtrer.html.twig' with {form: form} only %}#}
+                    </div>
+                    <div class="col-md-9 js-filter-form">
+                        <table class="table">
+                            <thead>
                             <tr>
-                                <td><a href="{{ path('entreprise_show', {slug: entreprise.slug})}}">{{ entreprise.name }}</a></td>
-                                <td>{{ entreprise.description }}</td>
-                                <td>
-                                    {% if entreprise.logo|length %}
-                                        <img class="card-img-top" style="width:100px" src="{{ asset(entreprise.getUrlLastLogo()) }}" alt="{{ entreprise.getNameLastLogo() }}">
-                                    {% endif %}
-                                </td>
-                                <td>{{ entreprise.address }}</td>
-                                <td>{{ entreprise.city }}</td>
-                                <td>{{ entreprise.zipcode }}</td>
-                                <td>{{ entreprise.secteur }}</td>
-                                <td>
-                                    <a href="{{ path('entreprise_edit', {'id': entreprise.id}) }}">edit</a>
-                                </td>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Logo</th>
+                                <th>Address</th>
+                                <th>City</th>
+                                <th>Zipcode</th>
+                                <th>Secteur</th>
+                                <th>actions</th>
                             </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="12">no records found</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                    {{ knp_pagination_render(entreprises, 'Pagination/twitter_bootstrap_v4_pagination.html.twig') }}
-                    <a class="btn btn-primary" href="{{ path('entreprise_new') }}">Create new</a>
-
+                            </thead>
+                            <tbody>
+                            {% for entreprise in entreprises %}
+                                <tr>
+                                    <td><a href="{{ path('entreprise_show', {slug: entreprise.slug})}}">{{ entreprise.name }}</a></td>
+                                    <td>{{ entreprise.description }}</td>
+                                    <td>
+                                        {% if entreprise.logo|length %}
+                                            <img class="card-img-top" style="width:100px" src="{{ asset(entreprise.getUrlLastLogo()) }}" alt="{{ entreprise.getNameLastLogo() }}">
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ entreprise.address }}</td>
+                                    <td>{{ entreprise.city }}</td>
+                                    <td>{{ entreprise.zipcode }}</td>
+                                    <td>{{ entreprise.secteur }}</td>
+                                    <td>
+                                        <a href="{{ path('entreprise_edit', {'id': entreprise.id}) }}">edit</a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="12">no records found</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        {#{{ knp_pagination_render(entreprises, 'Pagination/twitter_bootstrap_v4_pagination.html.twig') }}#}
+                        <a class="btn btn-primary" href="{{ path('entreprise_new') }}">Create new</a>
+                    </div>
             </div>
         </div>
     </section>

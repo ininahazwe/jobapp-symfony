@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ModeleOffreCommercialeRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -44,9 +45,9 @@ class ModeleOffreCommerciale
     private ?int $nombre_recruteurs;
 
     /**
-     * @ORM\OneToOne(targetEntity=Offre::class, mappedBy="modele_offre_commerciale", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity=Offre::class, mappedBy="modele_offre_commerciale", cascade={"persist", "remove"})
      */
-    private ?Offre $offre;
+    private ?Collection $offre;
 
     /**
      * @ORM\Column(type="string", length=255)

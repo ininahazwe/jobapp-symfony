@@ -1,3 +1,5 @@
 <h1>Activation de votre compte</h1>
-Vous avez créé un compte sur notre site, veuillez cliquer sur le lien ci-dessous pour l'activer
-<a href="{{ absolute_url(path('activation', {'token': token})) }}">Activer mon compte</a>
+Vos informations d'accès
+login : {{ user.email }}
+mot de passe : {{ password }}
+

@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Data\SearchData;
 use App\Entity\Entreprise;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @method Entreprise|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,9 +17,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class EntrepriseRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private PaginatorInterface $paginator;
+
+    public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
     {
         parent::__construct($registry, Entreprise::class);
+        $this->paginator = $paginator;
     }
 
     public function getNbMaxRecruteurs($entreprise = null)
@@ -33,47 +39,73 @@ class EntrepriseRepository extends ServiceEntityRepository
 
         foreach ($offres as $offre)
         {
-            if ($offre->getNombreRecruteurs() !== null){
+            if ($offre->getNombreRecruteurs() != null){
                 $nombre = $nombre + $offre->getNombreRecruteurs();
                 if ($offre->getNombreRecruteurs() == 0){
                     return $nombre = 0;
                 }
+            }else{
+                $nombre = 10000;
             }
 
         }
         return $nombre;
     }
 
+
     /**
+     * @param SearchData $search
      * @param $userId
-     * @return mixed
+     * @return PaginationInterface
      */
-    public function getAllEntreprisesAdmin($userId): mixed
+    public function getAllEntreprisesAdmin(SearchData $search, $userId): PaginationInterface
     {
         $user = $this->_em->getRepository("App:User")->find($userId);
         if($user->isSuperAdmin()){
             $query =  $this->createQueryBuilder('e')
                 ->orderBy('e.id', 'ASC')
                 ;
-            return $query->getQuery()
-                ->getResult();
-        }elseif ($user->isSuperRecruteur()){
+
+            if(!empty($search->q)){
+                $query
+                    ->andWhere('e.name LIKE :q')
+                    ->setParameter('q', "%{$search->q}%");
+            }
+
+            return $this->paginator->paginate(
+                $query->getQuery(),
+                $search->page,
+                2
+            );
+        }elseif ($user->isSuperRecruteur()) {
             $query = $this->createQueryBuilder('e');
 
             $ids = array();
-            if (count($user->getRecruteursEntreprise())>0){
-                foreach ($user->getRecruteursEntreprise() as $item){
+            if (count($user->getRecruteursEntreprise()) > 0) {
+                foreach ($user->getRecruteursEntreprise() as $item) {
                     $ids[] = $item->getId();
                 }
                 $query->andWhere('e.id IN (:ids)')
                     ->setParameter('ids', $ids);
 
-                return $query->getQuery()->getResult() ;
-            }else{
-                return null;
+                if (!empty($search->q)) {
+                    $query = $query
+                        ->andWhere('e.name LIKE :q')
+                        ->setParameter('q', "%{$search->q}%");
+                }
+
+                return $this->paginator->paginate(
+                    $query->getQuery(),
+                    $search->page,
+                    2
+                );
+
+
+            } else {
+                //return null;
             }
         }else{
-            return null;
+            //return null;
         }
 
     }

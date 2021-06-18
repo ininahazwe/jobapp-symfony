@@ -4,19 +4,23 @@ namespace App\Extensions\Doctrine;
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
+use Doctrine\ORM\Query\QueryException;
 use Doctrine\ORM\Query\SqlWalker;
 
 class MatchAgainst extends FunctionNode
 {
-    /** @var array list of \Doctrine\ORM\Query\AST\PathExpression */
-    protected $pathExp = null;
-    /** @var string */
-    protected $against = null;
+    /** @var array|null list of \Doctrine\ORM\Query\AST\PathExpression */
+    protected ?array $pathExp = null;
+    /** @var string|null */
+    protected ?string $against = null;
     /** @var bool */
-    protected $booleanMode = false;
+    protected bool $booleanMode = false;
     /** @var bool */
-    protected $queryExpansion = false;
+    protected bool $queryExpansion = false;
 
+    /**
+     * @throws QueryException
+     */
     public function parse(Parser $parser)
     {
         // match
@@ -50,7 +54,7 @@ class MatchAgainst extends FunctionNode
         $parser->match(Lexer::T_CLOSE_PARENTHESIS);
     }
 
-    public function getSql(SqlWalker $walker)
+    public function getSql(SqlWalker $walker): string
     {
         $fields = [];
         foreach ($this->pathExp as $pathExp) {
