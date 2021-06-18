@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\File;
 use App\Form\UserType;
 use App\Repository\EntrepriseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,9 +36,14 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('user_creation');
+            $this->uploadFile($form->get('files')->getData(), $user);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_profile');
         }
 
         return $this->render('user/edit_user.html.twig', [
@@ -112,5 +118,24 @@ class UserController extends AbstractController
         ]);
 
         return new Response();
+    }
+
+    /**
+     * @param $file
+     * @param $user
+     */
+    public function uploadFile($file, $user)
+    {
+        $image = $file;
+        $fichier = md5(uniqid()) . '.' . $image->guessExtension();
+        $name = $image->getClientOriginalName();
+        $image->move(
+            $this->getParameter('files_directory'),
+            $fichier
+        );
+        $img = new File();
+        $img->setName($fichier);
+        $img->setNameFile($name);
+        $user->addFiles($img);
     }
 }

@@ -1,0 +1,2 @@
+#!/bin/sh
+rsync -av ./ u52412209@home277091543.1and1-data.host:~/handicv --include=public/build --include=public/.htaccess --exclude-from=.gitignore --exclude=".*"

@@ -3,12 +3,12 @@
 namespace App\Form;
 
 use App\Entity\Page;
-use Doctrine\DBAL\Types\TextType;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -28,8 +28,16 @@ class PageType extends AbstractType
             ->add('slug', null, [
                 'required' => false
             ])
-            ->add('filename', FileType::class, [
-                'data_class' => null,
+            ->add('metaTitle', TextType::class, [
+                'required' => false
+            ])
+            ->add('metaDescription', TextareaType::class, [
+                'required' => false
+            ])
+            ->add('files', FileType::class, [
+                'label' => false,
+                'multiple' => false,
+                'mapped' => false,
                 'required' => false
             ])
         ;

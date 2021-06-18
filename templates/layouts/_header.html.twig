@@ -9,9 +9,9 @@
 >
     <div class="container d-flex align-items-center">
 
-        <h1 class="logo me-auto"><a href="{{ path('app_home') }}"><img src="{{ asset('assets/img/logo.png') }}" class="img-fluid" alt=""></a></h1>
+        <!-- <div class="logo me-auto"><a href="{{ path('app_home') }}"><img src="{{ asset('assets/img/logo.png') }}" class="img-fluid" alt=""></a></div>-->
         <!-- Uncomment below if you prefer to use an image logo -->
-        <!-- <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+        <a href="{{ path('app_home') }}" class="logo me-auto"><img src="{{ asset('assets/img/logo.png') }}" alt="" class="img-fluid"></a>
 
         <nav id="navbar" class="navbar">
             <ul>
@@ -22,7 +22,7 @@
                     {% if menuN2|length %}
                         <li class="dropdown"><a href="#"><span>{{ menu.name }}</span> <i class="bi bi-chevron-down"></i></a>
                             <ul>
-                                <li><a href="../{{ menu.link }}">{{ menu.name }}</a></li>
+                                <li><a href="../../{{ menu.link }}">{{ menu.name }}</a></li>
                                 {% for _menu in menuN2 %}
 
                                     <li><a href="../{{ _menu.link }}">{{ _menu.name }}</a></li>
@@ -30,7 +30,7 @@
                             </ul>
                         </li>
                     {% else %}
-                        <li><a class="nav-link" href="../{{ menu.link }}">{{ menu.name }}</a></li>
+                        <li><a class="nav-link" href="../../{{ menu.link }}">{{ menu.name }}</a></li>
                     {% endif %}
 
                 {% endfor %}

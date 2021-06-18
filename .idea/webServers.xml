@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="71014425-c3e1-4daa-a16a-1cccb25470d5" name="HandiCV" url="http://handi-cv.newnet3d.net">
+        <fileTransfer rootFolder="/handicv" accessType="SFTP" host="home277091543.1and1-data.host" port="22" sshConfigId="ff8a028d-99bd-48ac-80eb-dc30a542cee7" sshConfig="u52412209@home277091543.1and1-data.host:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

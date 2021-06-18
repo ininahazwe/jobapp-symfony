@@ -44,7 +44,11 @@ class EntrepriseRepository extends ServiceEntityRepository
         return $nombre;
     }
 
-    public function getAllEntreprisesAdmin($userId)
+    /**
+     * @param $userId
+     * @return mixed
+     */
+    public function getAllEntreprisesAdmin($userId): mixed
     {
         $user = $this->_em->getRepository("App:User")->find($userId);
         if($user->isSuperAdmin()){

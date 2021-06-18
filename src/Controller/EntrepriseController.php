@@ -11,8 +11,8 @@ use App\Form\OffreType;
 use App\Form\UserType;
 use App\Repository\EntrepriseRepository;
 use App\Repository\ModeleOffreCommercialeRepository;
-use App\Repository\OffreRepository;
 use App\Repository\UserRepository;
+use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use function _HumbugBoxa991b62ce91e\React\Promise\Stream\first;
 
 #[Route('/cms/entreprise')]
 class EntrepriseController extends AbstractController
@@ -30,12 +29,10 @@ class EntrepriseController extends AbstractController
     {
         $entreprisedata = $entrepriseRepository->getAllEntreprisesAdmin($this->getUser()->getId());
 
-        //$data = $entrepriseRepository->findAll();
-
         $entreprises = $paginator->paginate(
             $entreprisedata,
             $request->query->getInt('page', 1),
-            4
+            10
         );
 
         if($this->getUser()->isSuperRecruteur()){
@@ -58,17 +55,8 @@ class EntrepriseController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $images = $form->get('logo')->getData();
-            foreach($images as $image){
-                $fichier = md5(uniqid()) . '.' . $image->guessExtension();
-                $image->move(
-                    $this->getParameter('files_directory'),
-                    $fichier
-                );
-                $img = new File();
-                $img->setName($fichier);
-                $entreprise->addLogo($img);
-            }
+            $this->uploadFile($form->get('logo')->getData(), $entreprise);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($entreprise);
             $entityManager->flush();
@@ -76,9 +64,7 @@ class EntrepriseController extends AbstractController
             $modele = $modeleOffreCommercialeRepository->findOneBy(['prix' => '0']);
             $this->saveOffreModele($entreprise->getId(), $modele->getId());
 
-
-
-            return $this->redirectToRoute('entreprise_recruteurs');
+            return $this->redirectToRoute('entreprise_recruteurs', ['id' => $entreprise->getId()] );
         }
 
         return $this->render('entreprise/new.html.twig', [
@@ -140,18 +126,7 @@ class EntrepriseController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $images = $form->get('logo')->getData();
-
-            foreach($images as $image){
-                $fichier = md5(uniqid()) . '.' . $image->guessExtension();
-                $image->move(
-                    $this->getParameter('files_directory'),
-                    $fichier
-                );
-                $img = new File();
-                $img->setName($fichier);
-                $entreprise->addLogo($img);
-            }
+            $this->uploadFile($form->get('logo')->getData(), $entreprise);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($entreprise);
@@ -205,7 +180,6 @@ class EntrepriseController extends AbstractController
         }else{
             $user = new User();
         }
-
 
         $entityManager = $this->getDoctrine()->getManager();
         $form = $this->createForm(UserType::class, $user);
@@ -274,7 +248,11 @@ class EntrepriseController extends AbstractController
     }
 
 
-
+    /**
+     * @param $id
+     * @param $idModel
+     * @throws Exception
+     */
     public function saveOffreModele($id, $idModel)
     {
         $entityManager = $this->getDoctrine()->getManager();
@@ -301,5 +279,24 @@ class EntrepriseController extends AbstractController
         $entityManager->persist($formule);
 
         $entityManager->flush();
+    }
+
+    /**
+     * @param $file
+     * @param $entreprise
+     */
+    public function uploadFile($file, $entreprise)
+    {
+        $image = $file;
+        $fichier = md5(uniqid()) . '.' . $image->guessExtension();
+        $name = $image->getClientOriginalName();
+        $image->move(
+            $this->getParameter('files_directory'),
+            $fichier
+        );
+        $img = new File();
+        $img->setName($fichier);
+        $img->setNameFile($name);
+        $entreprise->addLogo($img);
     }
 }

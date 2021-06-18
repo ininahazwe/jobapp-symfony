@@ -11,8 +11,7 @@
                     <li><a href="{{ path('app_home') }}">Home</a></li>
                     <li>Dashboard</li>
                 </ol>
-                <h2>Tableau de bord</h2>
-
+                <h1>Tableau de bord</h1>
             </div>
         </section><!-- End Breadcrumbs -->
         <section class="inner-page">
@@ -54,9 +53,9 @@
                     </div>
                     <div class="col-md-3 text-center d-flex flex-column">
                         <h3>Profile</h3>
-                        <div class="text-center p-3">
-                            <img src="https://i.imgur.com/bDLhJiP.jpg" width="100" class="rounded-circle">
-                        </div>
+                        {% if user.files|length %}
+                            <img class="rounded-circle mx-auto p-3" style="width:150px" src="{{ asset(user.getUrlLastFile()) }}" alt="{{ user.getNameLastFIle() }}">
+                        {% endif %}
                         <div>
                             <span class="bg-secondary p-1 px-4 rounded text-white">
                             {{ app.user.getRoleName() }}

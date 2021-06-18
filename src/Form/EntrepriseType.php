@@ -20,7 +20,7 @@ class EntrepriseType extends AbstractType
             ->add('description')
             ->add('logo', FileType::class, [
                 'label' => false,
-                'multiple' => true,
+                'multiple' => false,
                 'mapped' => false,
                 'required' => false
             ])

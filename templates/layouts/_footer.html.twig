@@ -31,7 +31,7 @@
                         {% if menuN2|length %}
                             <ul>
                                 {% for _footer in menuN2 %}
-                                <li><i class="bx bx-chevron-right"></i> <a href="../{{ _footer.link }}">{{ _footer.name }}</a></li>
+                                <li><i class="bx bx-chevron-right"></i> <a href="../../{{ _footer.link }}">{{ _footer.name }}</a></li>
                                 {% endfor %}
                             </ul>
                         {% endif %}
@@ -45,22 +45,22 @@
                     {% endif %}
                     <div class="social-links mt-3">
                         {% if twitter %}
-                        <a href="{{ twitter.link }}" class="twitter"><i class="bx bxl-twitter"></i></a>
+                        <a href="{{ twitter.link }}" class="twitter" target="_blank"><i class="bx bxl-twitter"></i></a>
                         {% endif %}
                         {% if facebook %}
-                        <a href="{{ facebook.link }}" class="facebook"><i class="bx bxl-facebook"></i></a>
+                        <a href="{{ facebook.link }}" class="facebook" target="_blank"><i class="bx bxl-facebook"></i></a>
                         {% endif %}
                         {% if instagram %}
-                        <a href="{{ instagram.link }}" class="instagram"><i class="bx bxl-instagram"></i></a>
+                        <a href="{{ instagram.link }}" class="instagram" target="_blank"><i class="bx bxl-instagram"></i></a>
                         {% endif %}
                         {% if skype %}
-                        <a href="{{ skype.link }}" class="google-plus"><i class="bx bxl-skype"></i></a>
+                        <a href="{{ skype.link }}" class="google-plus" target="_blank"><i class="bx bxl-skype"></i></a>
                         {% endif %}
                         {% if linkedin %}
-                        <a href="{{ linkedin.link }}#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
+                        <a href="{{ linkedin.link }}#" class="linkedin" target="_blank"><i class="bx bxl-linkedin"></i></a>
                         {% endif %}
                         {% if youtube %}
-                            <a href="{{ youtube.link }}" class="-youtube"><i class="bx bxl-youtube"></i></a>
+                            <a href="{{ youtube.link }}" class="-youtube" target="_blank"><i class="bx bxl-youtube"></i></a>
                         {% endif %}
                     </div>
                 </div>
@@ -78,10 +78,10 @@
             <!-- You can delete the links only if you purchased the pro version. -->
             <!-- Licensing information: https://bootstrapmade.com/license/ -->
             <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/arsha-free-bootstrap-html-template-corporate/ -->
-            Designed by <a href="https://bootstrapmade.com/">Talents Handicap</a>
+            Designed by <a href="https://www.talents-handicap.com/" target="_blank">Talents Handicap</a>
         </div>
     </div>
 </footer><!-- End Footer -->
 
-<div id="preloader"></div>
+{# <div id="preloader"></div> #}
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>

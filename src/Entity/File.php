@@ -23,9 +23,21 @@ class File
     private ?Entreprise $entreprise;
 
     /**
-     * @ORM\OneToOne(targetEntity=User::class, mappedBy="photo", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity=Page::class, inversedBy="files")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private ?Page $pages;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="files")
+     * @ORM\JoinColumn(nullable=true)
      */
     private ?User $user;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private ?string $nameFile;
 
     public function getName(): ?string
     {
@@ -51,6 +63,18 @@ class File
         return $this;
     }
 
+    public function getPages(): ?Page
+    {
+        return $this->pages;
+    }
+
+    public function setPages(?Page $pages): self
+    {
+        $this->pages = $pages;
+
+        return $this;
+    }
+
     public function getUser(): ?User
     {
         return $this->user;
@@ -58,17 +82,19 @@ class File
 
     public function setUser(?User $user): self
     {
-        // unset the owning side of the relation if necessary
-        if ($user === null && $this->user !== null) {
-            $this->user->setPhoto(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($user !== null && $user->getPhoto() !== $this) {
-            $user->setPhoto($this);
-        }
-
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getNameFile(): ?string
+    {
+        return $this->nameFile;
+    }
+
+    public function setNameFile(string $nameFile): self
+    {
+        $this->nameFile = $nameFile;
 
         return $this;
     }

@@ -9,10 +9,11 @@
         <div class="container">
             <ol>
                 <li><a href="{{ path('app_home') }}">Home</a></li>
-                <li>Dashboard</li>
+                <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
+                <li><a href="{{ path('modele_offre_commerciale_index') }}">Modèles Offres commerciales</a></li>
+                <li>Modele</li>
             </ol>
-            <h2>Offre</h2>
-
+            <h1>{{ offre.formule }}</h1>
         </div>
     </section><!-- End Breadcrumbs -->
     <section class="inner-page">
@@ -29,11 +30,11 @@
                     </tr>
                     <tr>
                         <th>DebutContratAt</th>
-                        <td>{{ offre.debutContratAt ? offre.debutContratAt|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ offre.debutContratAt ? offre.debutContratAt|date('d-m-Y') : '' }}</td>
                     </tr>
                     <tr>
                         <th>FinContratAt</th>
-                        <td>{{ offre.finContratAt ? offre.finContratAt|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ offre.finContratAt ? offre.finContratAt|date('d-m-Y') : '' }}</td>
                     </tr>
                     <tr>
                         <th>IsCvTheque</th>
@@ -46,11 +47,9 @@
 
                 </tbody>
             </table>
-            <a href="{{ path('offre_index') }}">back to list</a>
-            <a href="{{ path('offre_edit', {'id': offre.id}) }}">edit</a>
+             <a href="{{ path('offre_edit', {'id': offre.id}) }}">edit</a>
         </div>
     </section>
 </main>
 
-    {{ include('offre/_delete_form.html.twig') }}
 {% endblock %}

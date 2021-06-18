@@ -6,6 +6,7 @@ use App\Entity\Menu;
 use App\Entity\Page;
 use App\Repository\AnnonceRepository;
 use App\Repository\MenuRepository;
+use App\Repository\ModeleOffreCommercialeRepository;
 use App\Repository\OffreRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,14 +18,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class HomeController extends AbstractController
 {
     #[Route('/', name:'app_home')]
-    public function index(AnnonceRepository $annoncesRepo, Request $request, OffreRepository $offreRepository): Response
+    public function index(AnnonceRepository $annoncesRepo, Request $request, ModeleOffreCommercialeRepository $modeleOffreCommercialeRepository): Response
     {
         $annonces = $annoncesRepo->findBy(['isActive' => true], ['createdAt' => 'desc'], 5);
-        $offres = $offreRepository->findAll();
+        $offres = $modeleOffreCommercialeRepository->findAll();
 
         return $this->render('home/index.html.twig', [
             'annonces' => $annonces,
-            'offres' => $offres,
+            'modeles' => $offres,
         ]);
     }
     #[Route('/view/menus', name:'app_view_menus')]

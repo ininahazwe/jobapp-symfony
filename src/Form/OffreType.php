@@ -14,6 +14,7 @@ class OffreType extends AbstractType
     {
         $builder
             ->add('formule')
+            ->add('slug')
             ->add('nombre_offres')
             ->add('debutContratAt', DateTimeType::class, [
                 'date_widget' => 'single_text',
@@ -24,7 +25,8 @@ class OffreType extends AbstractType
             ->add('isCvTheque')
             ->add('prix')
             ->add('facture')
-            ->add('entreprise');
+            ->add('entreprise')
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)

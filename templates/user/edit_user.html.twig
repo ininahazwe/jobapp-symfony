@@ -11,7 +11,7 @@
                     <li><a href="{{ path('app_home') }}">Home</a></li>
                     <li>Dashboard</li>
                 </ol>
-                <h2>Modification d'informations personnelles</h2>
+                <h1>Modification d'informations personnelles</h1>
 
             </div>
         </section><!-- End Breadcrumbs -->
@@ -19,7 +19,7 @@
         <section class="inner-page">
         <div class="container">
             <div class="col-xs4">
-                {{ form(form) }}
+                 {{ include('user/_form.html.twig', {'button_label': 'Enregistrer'}) }}
             </div>
         </div>
         </section>

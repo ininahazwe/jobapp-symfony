@@ -13,7 +13,7 @@
                     <li><a href="{{ path('entreprise_index') }}">Entreprises</a></li>
                     <li>Lecture</li>
                 </ol>
-                <h2>{{ entreprise.name }}</h2>
+                <h1>{{ entreprise.name }}</h1>
             </div>
         </section><!-- End Breadcrumbs -->
         <section class="inner-page">
@@ -30,10 +30,8 @@
                     <div class="col-md-9 text-center d-flex flex-column">
                         <h3>Informations générales</h3>
                           <a>{{ entreprise.name }}</a>
-                        {% if entreprise.logo %}
-                            {% for file in entreprise.logo %}
-                                <img class="card-img-top mx-auto" style="width:100px" src="{{ asset('uploads/' ~ file.name) }}">
-                            {% endfor %}
+                        {% if entreprise.logo|length %}
+                            <img class="card-img-top mx-auto" style="width:100px" src="{{ asset(entreprise.getUrlLastLogo()) }}" alt="{{ entreprise.getNameLastLogo() }}">
                         {% endif %}
                         <p>{{ entreprise.description }}</p>
                         <p>{{ entreprise.address }}</p>

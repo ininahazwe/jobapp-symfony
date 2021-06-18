@@ -59,7 +59,7 @@ class Offre
     private ?int $nombre_recruteurs;
 
     /**
-     * @ORM\OneToOne(targetEntity=ModeleOffreCommerciale::class, inversedBy="offre", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity=ModeleOffreCommerciale::class, inversedBy="offre", cascade={"persist", "remove"})
      */
     private ?ModeleOffreCommerciale $modele_offre_commerciale;
 

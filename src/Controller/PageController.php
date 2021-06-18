@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Data\SearchData;
+use App\Entity\File;
 use App\Entity\Page;
 use App\Form\PageType;
+use App\Form\SearchForm;
 use App\Repository\PageRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,10 +17,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class PageController extends AbstractController
 {
     #[Route('/', name: 'page_index', methods: ['GET'])]
-    public function index(PageRepository $pageRepository): Response
+    public function index(PageRepository $pageRepository, Request $request): Response
     {
+        $data = new SearchData();
+        $data->page = $request->get('page', 1);
+        $form = $this->createForm(SearchForm::class, $data);
+        $form->handleRequest($request);
+
+        $pages = $pageRepository->findSearch($data);
         return $this->render('page/index.html.twig', [
-            'pages' => $pageRepository->findAll(),
+            'pages' => $pages,
+            'form' => $form->createView()
         ]);
     }
 
@@ -29,10 +39,10 @@ class PageController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $this->uploadFile($form->get('files')->getData(), $page);
+
             $entityManager = $this->getDoctrine()->getManager();
-
-
-
             $entityManager->persist($page);
             $entityManager->flush();
 
@@ -60,7 +70,12 @@ class PageController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+
+            $this->uploadFile($form->get('files')->getData(), $page);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($page);
+            $entityManager->flush();
 
             return $this->redirectToRoute('page_index');
         }
@@ -81,5 +96,24 @@ class PageController extends AbstractController
         }
 
         return $this->redirectToRoute('page_index');
+    }
+
+    /**
+     * @param $file
+     * @param $page
+     */
+    public function uploadFile($file, $page)
+    {
+        $image = $file;
+        $fichier = md5(uniqid()) . '.' . $image->guessExtension();
+        $name = $image->getClientOriginalName();
+        $file->move(
+            $this->getParameter('files_directory'),
+            $fichier
+        );
+        $img = new File();
+        $img->setName($fichier);
+        $img->setNameFile($name);
+        $page->addFile($img);
     }
 }

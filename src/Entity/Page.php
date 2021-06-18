@@ -3,16 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\PageRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
-
 
 /**
  * @ORM\Entity(repositoryClass=PageRepository::class)
- * @Vich\Uploadable
  */
 class Page
 {
@@ -49,18 +46,6 @@ class Page
     private ?string $slug;
 
     /**
-     * @var string|null
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $filename;
-
-    /**
-     * @var File
-     * @Vich\UploadableField(mapping="pages_images", fileNameProperty="filename")
-     */
-    private File $imageFile;
-
-    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $meta_title;
@@ -69,6 +54,16 @@ class Page
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $meta_description;
+
+    /**
+     * @ORM\OneToMany(targetEntity=File::class, mappedBy="pages", orphanRemoval=true, cascade={"persist"})
+     */
+    private Collection $files;
+
+    public function __construct()
+    {
+        $this->files = new ArrayCollection();
+    }
 
     public function getTitle(): ?string
     {
@@ -129,30 +124,6 @@ class Page
         return $this->slug;
     }
 
-    public function getFilename(): ?string
-    {
-        return $this->filename;
-    }
-
-    public function setFilename(?string $filename): void
-    {
-        $this->filename = $filename;
-    }
-
-    public function getImageFile(): File
-    {
-        return $this->imageFile;
-    }
-
-    public function setImageFile(File $filename = null)
-    {
-        $this->imageFile = $filename;
-
-        if ($filename) {
-            $this->updatedAt = new \DateTime('now');
-        }
-    }
-
     public function getMetaTitle(): ?string
     {
         return $this->meta_title;
@@ -187,5 +158,70 @@ class Page
             'Page Recruteur' => Page::TYPE_PAGE_RECRUTEUR,
             'Page global' => Page::TYPE_PAGE_AUTRE,
         );
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getFiles(): Collection
+    {
+        return $this->files;
+    }
+
+    public function addFile(File $file): self
+    {
+        if (!$this->files->contains($file)) {
+            $this->files[] = $file;
+            $file->setPages($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFile(File $file): self
+    {
+        if ($this->files->removeElement($file)) {
+            // set the owning side to null (unless already changed)
+            if ($file->getPages() === $this) {
+                $file->setPages(null);
+            }
+        }
+
+        return $this;
+    }
+    /**
+     * @return string
+     */
+    public function getUrlLastFile(): string
+    {
+        $url = "";
+        $files = array();
+        foreach ($this->getFiles() as $file){
+            $files[] = $file->getName();
+        }
+
+        $file = end($files);
+        $url = "uploads/" . $file;
+        return $url ;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameLastFile(): string
+    {
+        $files = array();
+        foreach ($this->getFiles() as $file){
+            $files[] = $file->getNameFile();
+        }
+
+        $file = end($files);
+        $name = $file;
+        return $name ;
+    }
+
+    public function __toString(): string
+    {
+        return $this->title;
     }
 }

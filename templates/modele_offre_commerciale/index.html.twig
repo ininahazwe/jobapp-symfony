@@ -11,7 +11,7 @@
                 <li><a href="{{ path('app_home') }}">Home</a></li>
                 <li>Dashboard</li>
             </ol>
-            <h2>Modèles Offres Commerciales</h2>
+            <h1>Modèles Offres Commerciales</h1>
 
         </div>
     </section><!-- End Breadcrumbs -->
@@ -21,9 +21,10 @@
          <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Name</th>
-                <th>Nombre_offres</th>
+                <th>Slug</th>
+                <th>Nombre d'offres</th>
+                <th>Nombre de recruteurs</th>
                 <th>IsCvTheque</th>
                 <th>DureeContrat</th>
                 <th>Prix</th>
@@ -33,9 +34,10 @@
         <tbody>
         {% for modele_offre_commerciale in modele_offre_commerciales %}
             <tr>
-                <td>{{ modele_offre_commerciale.id }}</td>
                 <td>{{ modele_offre_commerciale.name }}</td>
+                <td>{{ modele_offre_commerciale.slug }}</td>
                 <td>{{ modele_offre_commerciale.nombreOffres }}</td>
+                <td>{{ modele_offre_commerciale.nombreRecruteurs }}</td>
                 <td>{{ modele_offre_commerciale.isCvTheque ? 'Yes' : 'No' }}</td>
                 <td>{{ modele_offre_commerciale.dureeContrat }}</td>
                 <td>{{ modele_offre_commerciale.prix }}</td>

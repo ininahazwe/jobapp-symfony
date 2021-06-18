@@ -20,7 +20,7 @@ class User implements UserInterface
     use ResourceId;
     use Timestapable;
 
-     /**
+    /**
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private string $email;
@@ -36,6 +36,11 @@ class User implements UserInterface
      * @ORM\Column(type="string")
      */
     private string $password;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected string $username;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -180,9 +185,9 @@ class User implements UserInterface
     private Collection $recruteurs_entreprise;
 
     /**
-     * @ORM\OneToOne(targetEntity=File::class, inversedBy="user", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity=File::class, mappedBy="user", orphanRemoval=true, cascade={"persist"})
      */
-    private ?File $photo;
+    private Collection $files;
 
     public function __construct()
     {
@@ -194,6 +199,7 @@ class User implements UserInterface
         $this->createdAt = new DateTimeImmutable('now');
         $this->entreprises = new ArrayCollection();
         $this->recruteurs_entreprise = new ArrayCollection();
+        $this->files = new ArrayCollection();
     }
 
     public function getEmail(): string
@@ -276,6 +282,13 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+
+        return $this;
     }
 
     public function getFirstname(): ?string
@@ -548,14 +561,93 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getPhoto(): ?File
+    /**
+     * @return Collection
+     */
+    public function getFiles(): Collection
     {
-        return $this->photo;
+        return $this->files;
     }
 
-    public function setPhoto($photo): self
+    public function addFile(File $file): self
     {
-        $this->photo = $photo;
+        if (!$this->files->contains($file)) {
+            $this->files[] = $file;
+            $file->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFile(File $file): self
+    {
+        if ($this->files->removeElement($file)) {
+            // set the owning side to null (unless already changed)
+            if ($file->getUser() === $this) {
+                $file->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrlLastFile(): string
+    {
+        $url = "";
+        $files = array();
+        foreach ($this->getFiles() as $file){
+            $files[] = $file->getName();
+        }
+
+        $file = end($files);
+        $url = "uploads/" . $file;
+        return $url ;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameLastFile(): string
+    {
+        $files = array();
+        foreach ($this->getFiles() as $file){
+            $files[] = $file->getNameFile();
+        }
+
+        $file = end($files);
+        $name = $file;
+        return $name ;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getFile(): Collection
+    {
+        return $this->files;
+    }
+
+    public function addFiles(File $file): self
+    {
+        if (!$this->files->contains($file)) {
+            $this->files[] = $file;
+            $file->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFiles(File $file): self
+    {
+        if ($this->files->removeElement($file)) {
+            // set the owning side to null (unless already changed)
+            if ($file->getEntreprise() === $this) {
+                $file->setEntreprise(null);
+            }
+        }
 
         return $this;
     }

@@ -284,4 +284,35 @@ class Entreprise
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getUrlLastLogo(): string
+    {
+        $url = "";
+        $logos = array();
+        foreach ($this->getLogo() as $logo){
+            $logos[] = $logo->getName();
+        }
+
+        $logo = end($logos);
+        $url = "uploads/" . $logo;
+        return $url ;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameLastLogo(): string
+    {
+        $logos = array();
+        foreach ($this->getLogo() as $logo){
+            $logos[] = $logo->getNameFile();
+        }
+
+        $logo = end($logos);
+        $name = $logo;
+        return $name ;
+    }
 }

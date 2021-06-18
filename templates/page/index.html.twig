@@ -13,40 +13,58 @@
                 <li><a href="{{ path('page_index') }}">Pages</a></li>
                 <li>Répértoire</li>
             </ol>
-            <h2>Gestion des pages</h2>
+            <h1>Gestion des pages</h1>
         </div>
     </section><!-- End Breadcrumbs -->
     <section class="inner-page">
         <div class="container">
-             <table class="table">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Content</th>
-                <th>Style</th>
-                <th>Type</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for page in pages %}
-            <tr>
-                <td><a href="{{ path('page_show', {slug: page.slug})}}">{{ page.title }}</a></td>
-                <td>{{ page.content|raw() }}</td>
-                <td>{{ page.style }}</td>
-                <td>{{ page.type }}</td>
-                <td>
-                    <a href="{{ path('page_edit', {'id': page.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="10">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-                <a class="btn btn-primary" href="{{ path('page_new') }}">Créer une nouvelle page</a>
+            <div class="row">
+                <div class="col-md-3">
+                    {% include 'page/filtrer.html.twig' with {form: form} only %}
+                </div>
+                <div class="col-md-9">
+
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Content</th>
+                            <th>Style</th>
+                            <th>Type</th>
+                            <th>Slug</th>
+                            <th>Images</th>
+                            <th>actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for page in pages %}
+                            <tr>
+                                <td><a href="{{ path('page_show', {slug: page.slug})}}">{{ page.title }}</a></td>
+                                <td>{{ page.content|raw() }}</td>
+                                <td>{{ page.style }}</td>
+                                <td>{{ page.type }}</td>
+                                <td>{{ page.slug }}</td>
+                                <td>
+                                    {% if page.files|length %}
+                                        <img class="card-img-top mx-auto" style="width:100px" src="{{ asset(page.getUrlLastFile()) }}" alt="{{ page.getNameLastFile() }}">
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ path('page_edit', {'id': page.id}) }}">edit</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="10">no records found</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {{ knp_pagination_render(pages, 'Pagination/twitter_bootstrap_v4_pagination.html.twig') }}
+                    <a class="btn btn-primary" href="{{ path('page_new') }}">Créer une nouvelle page</a>
+                </div>
+            </div>
+
         </div>
     </section>
 </main>

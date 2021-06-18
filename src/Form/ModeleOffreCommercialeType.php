@@ -14,6 +14,7 @@ class ModeleOffreCommercialeType extends AbstractType
     {
         $builder
             ->add('name')
+            ->add('slug')
             ->add('nombre_offres', IntegerType::class,[
                 'required' => false
             ])

@@ -9,51 +9,44 @@
         <div class="container">
             <ol>
                 <li><a href="{{ path('app_home') }}">Home</a></li>
+                {% if app.user and app.user.isSuperAdmin() %}
                 <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
                 <li><a href="{{ path('page_index') }}">Pages</a></li>
-                <li>Lecture</li>
+                {% endif %}
+                <li>{{ page.title }}</li>
             </ol>
-            <h2>{{ page.title }}</h2>
+            <h1>{{ page.title }}</h1>
         </div>
     </section><!-- End Breadcrumbs -->
+    <section id="portfolio-details" class="portfolio-details">
+        <div class="container">
+
+            <div class="row gy-4">
+
+                <div class="col-lg-8">
+                    {{ page.content|raw }}
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="portfolio-info">
+                        {% if page.files|length %}
+                            <img class="card-img-top mx-auto" src="{{ asset(page.getUrlLastFile()) }}" alt="{{ page.getNameLastFile() }}">
+                        {% endif %}
+                    </div>
+                    <div class="portfolio-description">
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section><!-- End Portfolio Details Section -->
     <section class="inner-page">
         <div class="container">
 
-            <table class="table">
-        <tbody>
-            <tr>
-                <th>Title</th>
-                <td>{{ page.title }}</td>
-            </tr>
-            <tr>
-                <th>Content</th>
-                <td>{{ page.content|raw }}</td>
-            </tr>
-            <tr>
-                <th>Style</th>
-                <td>{{ page.style }}</td>
-            </tr>
-            <tr>
-                <th>Type</th>
-                <td>{{ page.type }}</td>
-            </tr>
-            <tr>
-                <th>Slug</th>
-                <td>{{ page.slug }}</td>
-            </tr>
-            <tr>
-                <th>Filename</th>
-                <td>{{ page.filename }}</td>
-            </tr>
-        </tbody>
-    </table>
 
-            <a href="{{ path('page_index') }}">back to list</a>
-
-            <a href="{{ path('page_edit', {'id': page.id}) }}">edit</a>
-        </div>
+            </div>
     </section>
 </main>
-
-    {{ include('page/_delete_form.html.twig') }}
 {% endblock %}

@@ -4,18 +4,14 @@ namespace App\Entity;
 
 use App\Repository\ModeleOffreCommercialeRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=ModeleOffreCommercialeRepository::class)
  */
 class ModeleOffreCommerciale
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private int $id;
+    use ResourceId;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -50,7 +46,13 @@ class ModeleOffreCommerciale
     /**
      * @ORM\OneToOne(targetEntity=Offre::class, mappedBy="modele_offre_commerciale", cascade={"persist", "remove"})
      */
-    private $offre;
+    private ?Offre $offre;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Gedmo\Slug(fields={"name"})
+     */
+    private ?string $slug;
 
     public function getId(): ?int
     {
@@ -147,6 +149,18 @@ class ModeleOffreCommerciale
         }
 
         $this->offre = $offre;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }
