@@ -45,7 +45,7 @@ class EntrepriseRepository extends ServiceEntityRepository
                     return $nombre = 0;
                 }
             }else{
-                $nombre = 10000;
+                $nombre = 0;
             }
 
         }

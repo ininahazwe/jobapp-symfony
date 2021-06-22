@@ -9,50 +9,52 @@
         <div class="container">
             <ol>
                 <li><a href="{{ path('app_home') }}">Home</a></li>
-                <li>Dashboard</li>
+                <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
+                <li><a href="{{ path('menu_index') }}">Modèles d'offres</a></li>
+                <li>Répértoire</li>
             </ol>
-            <h1>Modèles Offres Commerciales</h1>
-
+            <h1>Modèles d'offres commerciales</h1>
         </div>
     </section><!-- End Breadcrumbs -->
     <section class="inner-page">
         <div class="container">
 
          <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Slug</th>
-                <th>Nombre d'offres</th>
-                <th>Nombre de recruteurs</th>
-                <th>IsCvTheque</th>
-                <th>DureeContrat</th>
-                <th>Prix</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for modele_offre_commerciale in modele_offre_commerciales %}
-            <tr>
-                <td>{{ modele_offre_commerciale.name }}</td>
-                <td>{{ modele_offre_commerciale.slug }}</td>
-                <td>{{ modele_offre_commerciale.nombreOffres }}</td>
-                <td>{{ modele_offre_commerciale.nombreRecruteurs }}</td>
-                <td>{{ modele_offre_commerciale.isCvTheque ? 'Yes' : 'No' }}</td>
-                <td>{{ modele_offre_commerciale.dureeContrat }}</td>
-                <td>{{ modele_offre_commerciale.prix }}</td>
-                <td>
-                    <a href="{{ path('modele_offre_commerciale_show', {'id': modele_offre_commerciale.id}) }}">show</a>
-                    <a href="{{ path('modele_offre_commerciale_edit', {'id': modele_offre_commerciale.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="7">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Slug</th>
+                    <th>Nombre d'offres</th>
+                    <th>Nombre de recruteurs</th>
+                    <th>IsCvTheque</th>
+                    <th>DureeContrat</th>
+                    <th>Prix</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for modele_offre_commerciale in modele_offre_commerciales %}
+                <tr>
+                    <td>{{ modele_offre_commerciale.name }}</td>
+                    <td>{{ modele_offre_commerciale.slug }}</td>
+                    <td>{{ modele_offre_commerciale.nombreOffres }}</td>
+                    <td>{{ modele_offre_commerciale.nombreRecruteurs }}</td>
+                    <td>{{ modele_offre_commerciale.isCvTheque ? 'Yes' : 'No' }}</td>
+                    <td>{{ modele_offre_commerciale.dureeContrat }}</td>
+                    <td>{{ modele_offre_commerciale.prix }}</td>
+                    <td>
+                        <a href="{{ path('modele_offre_commerciale_show', {'id': modele_offre_commerciale.id}) }}">show</a>
+                        <a href="{{ path('modele_offre_commerciale_edit', {'id': modele_offre_commerciale.id}) }}">edit</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+            {{ knp_pagination_render(modele_offre_commerciales, 'Pagination/twitter_bootstrap_v4_pagination.html.twig') }}
             <a class="btn btn-primary" href="{{ path('modele_offre_commerciale_new') }}">Create new</a>
         </div>
     </section>

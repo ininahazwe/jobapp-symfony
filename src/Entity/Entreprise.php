@@ -83,6 +83,16 @@ class Entreprise
      */
     private Collection $logo;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Facture::class, mappedBy="entreprise")
+     */
+    private $factures;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $ref_client;
+
     public function __construct()
     {
         $this->Offres = new ArrayCollection();
@@ -90,6 +100,7 @@ class Entreprise
         $this->recruteurs = new ArrayCollection();
         $this->super_recruteurs = new ArrayCollection();
         $this->logo = new ArrayCollection();
+        $this->factures = new ArrayCollection();
     }
 
     /**
@@ -315,5 +326,47 @@ class Entreprise
         $logo = end($logos);
         $name = $logo;
         return $name ;
+    }
+
+    /**
+     * @return Collection|Facture[]
+     */
+    public function getFactures(): Collection
+    {
+        return $this->factures;
+    }
+
+    public function addFacture(Facture $facture): self
+    {
+        if (!$this->factures->contains($facture)) {
+            $this->factures[] = $facture;
+            $facture->setEntreprise($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFacture(Facture $facture): self
+    {
+        if ($this->factures->removeElement($facture)) {
+            // set the owning side to null (unless already changed)
+            if ($facture->getEntreprise() === $this) {
+                $facture->setEntreprise(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getRefClient(): ?string
+    {
+        return $this->ref_client;
+    }
+
+    public function setRefClient(?string $ref_client): self
+    {
+        $this->ref_client = $ref_client;
+
+        return $this;
     }
 }

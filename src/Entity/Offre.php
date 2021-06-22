@@ -44,9 +44,9 @@ class Offre
     private string $prix;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="boolean")
      */
-    private string $facture;
+    private string $isFacture;
 
     /**
      * @ORM\ManyToOne(targetEntity=Entreprise::class, inversedBy="Offres")
@@ -62,6 +62,11 @@ class Offre
      * @ORM\ManyToOne(targetEntity=ModeleOffreCommerciale::class, inversedBy="offre", cascade={"persist", "remove"})
      */
     private ?ModeleOffreCommerciale $modele_offre_commerciale;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Facture::class, inversedBy="offre")
+     */
+    private ?Facture $facture;
 
     public function __construct()
     {
@@ -140,14 +145,14 @@ class Offre
         return $this;
     }
 
-    public function getFacture(): ?string
+    public function getIsFacture(): ?bool
     {
-        return $this->facture;
+        return $this->isFacture;
     }
 
-    public function setFacture(?string $facture): self
+    public function setIsFacture(bool $isFacture): self
     {
-        $this->facture = $facture;
+        $this->isFacture = $isFacture;
 
         return $this;
     }
@@ -205,6 +210,17 @@ class Offre
         return false;
     }
 
+    public function isActiveNotFactured()
+    {
+
+        $now = new \DateTime('now');
+        if ($now < $this->getFinContratAt() && $this->getIsFacture() == true ){
+            return true;
+        }
+        return false;
+    }
+
+
     public function isPassed()
     {
         $now = new \DateTime('now');
@@ -223,5 +239,17 @@ class Offre
         return "Passée";
     }
         return "non renseignée";
+    }
+
+    public function getFacture(): ?Facture
+    {
+        return $this->facture;
+    }
+
+    public function setFacture(?Facture $facture): self
+    {
+        $this->facture = $facture;
+
+        return $this;
     }
 }

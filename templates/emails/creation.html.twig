@@ -2,4 +2,5 @@
 Vos informations d'accès
 login : {{ user.email }}
 mot de passe : {{ password }}
+<a href="{{ absolute_url(path('activation', {'token': token})) }}">Connnectez-vous</a></p>
 

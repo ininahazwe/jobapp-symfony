@@ -1,0 +1,66 @@
+{% extends "base-pdf.html.twig" %}
+
+{% block title %}Facture {{ facture.entreprise }}{% endblock %}
+{% block body %}
+    <div class="container">
+        <img src="{{ asset('assets/img/logo.png') }}">
+        <div class="facture-entete">
+            <div class="facture_prestataire">
+                <b>Prestataire</b>
+                <span>
+                HandiCV<br>
+                10 rue des tuilières<br>
+                06800 Cagnes sur mer
+                </span>
+            </div>
+            <div class="facture_client">
+                <span>
+                    <b>Client</b>
+                    {{ facture.entreprise }}
+                </span>
+
+                <span>
+                    Facture n° {{ facture }}<br>
+                    Emise le {{ facture.createdAt|date('d-m-Y') }}
+                </span>
+            </div>
+        </div>
+
+        <div class="row">
+            <h1 class="text-center">Facture {{ facture }}</h1>
+        </div>
+
+        <div class="facture-description">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Prix unitaire</th>
+                        <th>Quantité</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td>{{ facture.prix }}</td>
+                        <td></td>
+                        <td>{{ facture.prixTTC }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <style>
+        .facture-entete{
+            display: grid;
+            grid-auto-columns: 1fr 1fr;
+        }
+        .facture_client{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 200px;
+        }
+    </style>
+{% endblock %}

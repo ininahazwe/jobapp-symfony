@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\ModeleOffreCommerciale;
 use App\Form\ModeleOffreCommercialeType;
 use App\Repository\ModeleOffreCommercialeRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +15,16 @@ use Symfony\Component\Routing\Annotation\Route;
 class ModeleOffreCommercialeController extends AbstractController
 {
     #[Route('/', name: 'modele_offre_commerciale_index', methods: ['GET'])]
-    public function index(ModeleOffreCommercialeRepository $modeleOffreCommercialeRepository): Response
+    public function index(Request $request, ModeleOffreCommercialeRepository $modeleOffreCommercialeRepository, PaginatorInterface $paginator): Response
     {
+        $data = $modeleOffreCommercialeRepository->findAll();
+        $modeles = $paginator->paginate(
+            $data,
+            $request->query->getInt('page', 1),
+            4
+        );
         return $this->render('modele_offre_commerciale/index.html.twig', [
-            'modele_offre_commerciales' => $modeleOffreCommercialeRepository->findAll(),
+            'modele_offre_commerciales' => $modeles,
         ]);
     }
 

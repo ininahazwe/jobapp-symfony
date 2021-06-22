@@ -23,18 +23,16 @@ class PageRepository extends ServiceEntityRepository
 
     public function search($mots = null){
         $query = $this->createQueryBuilder('p');
-        $query->select('p')
-            ->addOrderBy('p.id', 'ASC');
 
-       /* if($mots ==! null){
+        if($mots ==! null){
             $query->andWhere('MATCH_AGAINST(p.title, p.content) AGAINST(:mots boolean)>0')
                 ->setParameter('mots', $mots);
-        }*/
+        }
 
-        if ($mots){
+        /*if ($mots){
             $query->andWhere('p.title LIKE :mots')
                 ->setParameter('mots' ,  '%' . $mots . '%');
-        }
+        }*/
         return $query->getQuery()->getResult();
     }
 }

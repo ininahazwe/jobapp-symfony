@@ -18,12 +18,15 @@ class PageController extends AbstractController
     #[Route('/', name: 'page_index', methods: ['GET', 'POST'])]
     public function index(PageRepository $pageRepository, Request $request): Response
     {
-        $pages = $pageRepository->search();
+        $pages = $pageRepository->findAll();
+
         $form = $this->createForm(SearchForm::class);
-        $form->handleRequest($request);
+
+        $search = $form->handleRequest($request);
+
         if($form->isSubmitted() && $form->isValid()){
             $pages = $pageRepository->search(
-                $form->get('mots')->getData(),
+                $search->get('mots')->getData()
             );
         }
 

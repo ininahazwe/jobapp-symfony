@@ -10,11 +10,10 @@
             <ol>
                 <li><a href="{{ path('app_home') }}">Home</a></li>
                 <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
-                <li><a href="{{ path('modele_offre_commerciale_index') }}">Offres commerciales</a></li>
+                <li><a href="{{ path('menu_index') }}">Modèles d'offres</a></li>
                 <li>Lecture</li>
             </ol>
-            <h1>Modèle {{ modele_offre_commerciale.name }}</h1>
-
+            <h1>{{ modele_offre_commerciale.name }}</h1>
         </div>
     </section><!-- End Breadcrumbs -->
     <section class="inner-page">

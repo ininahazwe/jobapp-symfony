@@ -24,7 +24,7 @@ class UserCreationController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'user_creation_new', methods: ['GET', 'POST'])]
+    /*#[Route('/new', name: 'user_creation_new', methods: ['GET', 'POST'])]
     public function new(Request $request, UserPasswordEncoderInterface $passwordEncoder, MailerInterface $mailer): Response
     {
         $user = new User();
@@ -73,7 +73,7 @@ class UserCreationController extends AbstractController
             'user' => $user,
             'form' => $form->createView(),
         ]);
-    }
+    }*/
 
     #[Route('/{id}', name: 'user_creation_show', methods: ['GET'])]
     public function show(User $user): Response
@@ -128,7 +128,7 @@ class UserCreationController extends AbstractController
 
         $this->addFlash('success', 'Vous avez bien activé votre compte');
 
-        return $this->render('security/login.html.twig');
+        return $this->render('home/index.html.twig');
     }
 
 }

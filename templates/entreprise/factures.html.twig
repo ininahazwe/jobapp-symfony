@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Entreprise {{ entreprise.name }}{% endblock %}
+
+{% block body %}
+    <main id="main">
+        <!-- ======= Breadcrumbs ======= -->
+        <section id="breadcrumbs" class="breadcrumbs">
+            <div class="container">
+                <ol>
+                    <li><a href="{{ path('app_home') }}">Home</a></li>
+                    <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
+                    <li><a href="{{ path('entreprise_index') }}">Entreprises</a></li>
+                    <li>Facture</li>
+                </ol>
+                <h1>Factures de {{ entreprise.name }}</h1>
+            </div>
+        </section><!-- End Breadcrumbs -->
+        <section class="inner-page">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="d-flex flex-column">
+                            {{ include('entreprise/menu.html.twig') }}
+                        </div>
+                    </div>
+                    <div class="col-md-9 text-center d-flex flex-column">
+                        <table class="table">
+                            <thead>
+                              <tr>
+                                  <th>Référence</th>
+                                  <th>Date de la facture</th>
+                                  <th>Date limite de paiement</th>
+                                  <th>Payé ?</th>
+                                  <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                            {% for facture in factures %}
+                                <tr>
+                                    <td>{{ facture }}</td>
+                                    <td>{{ facture.createdAt ? facture.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                                    <td>{{ facture.limiteDatePaid ? facture.limiteDatePaid|date('Y-m-d H:i:s') : '' }}</td>
+                                    <td>{{ facture.isPaid ? 'Oui' : 'Non' }}</td>
+                                    <td>
+                                        <a href="{{ path('facture_download', {'id': facture.id}) }}">Télécharger en PDF</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

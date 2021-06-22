@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Facture index{% endblock %}
+
+{% block body %}
+    <main id="main">
+        <!-- ======= Breadcrumbs ======= -->
+        <section id="breadcrumbs" class="breadcrumbs">
+            <div class="container">
+                <ol>
+                    <li><a href="{{ path('app_home') }}">Home</a></li>
+                    <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
+                    <li><a href="{{ path('facture_index') }}">Factures</a></li>
+                    <li>Lecture</li>
+                </ol>
+                <h1>Factures payées</h1>
+            </div>
+        </section><!-- End Breadcrumbs -->
+        <section class="inner-page">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="d-flex flex-column">
+                            {{ include('facture/menu.html.twig') }}
+                        </div>
+                    </div>
+                    <div class="col-md-9 text-center d-flex flex-column">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Entreprise</th>
+                                <th>PrixTTC</th>
+                                <th>Date de paiement</th>
+                                <th>Moyen de paiement</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for facture in factures %}
+                                <tr>
+                                    <td>{{ facture.entreprise }}</td>
+                                    <td>{{ facture.prixTTC }} €</td>
+                                    <td>{{ facture.paymentDate ? facture.paymentDate|date('Y-m-d') : '' }}</td>
+                                    <td>{{ facture.getPaymentMethodsName() }}</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="11">no records found</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    {#<a href="{{ path('facture_new') }}">Create new</a>#}
+{% endblock %}

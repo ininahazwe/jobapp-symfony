@@ -18,7 +18,66 @@ class OffreRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Offre::class);
     }
+    public function getOffresActiveNotFactured()
+    {
+        $now = new \DateTime('now');
+        $query = $this->createQueryBuilder('o')
+            ->andWhere('o.debutContratAt <= :date')
+            ->andWhere('o.finContratAt >= :date')
+            ->andWhere('o.isFacture = 0')
+            ->andWhere('o.prix > 0')
+            ->setParameter('date' , $now);
 
+        return $query->getQuery()
+            ->getResult()
+            ;
+
+    }
+    public function getOffreActiveNotFactured($entreprise, $prix = false)
+    {
+    $now = new \DateTime('now');
+    $query = $this->createQueryBuilder('o')
+        ->andWhere('o.debutContratAt <= :date')
+        ->andWhere('o.finContratAt >= :date')
+        ->andWhere('o.isFacture = 0')
+        ->andWhere('o.entreprise = :entreprise')
+        ->andWhere('o.prix > 0')
+        ->setParameter('entreprise' , $entreprise)
+        ->setParameter('date' , $now);
+
+    if ($prix){
+        $price = 0 ;
+        $result = $query->getQuery()->getResult();
+        foreach ($result as $item){
+            $price += $item->getPrix();
+        }
+
+        return $price;
+    }
+    return $query->getQuery()
+        ->getResult()
+        ;
+
+}
+
+    public function genererRef()
+    {
+
+        $query = $this->getEntityManager()->getRepository('App\Entity\Facture')->createQueryBuilder('f');
+        $query->addOrderBy('f.id' ,'DESC')
+            ->setMaxResults(1);
+
+        $facture = current($query->getQuery()->getResult());
+
+
+        $referance = "10000001";
+        if ($facture){
+            $int_value = (int) $facture->getReference();
+            $referance = $int_value + 1;
+        }
+
+        return $referance ;
+    }
     // /**
     //  * @return Offre[] Returns an array of Offre objects
     //  */

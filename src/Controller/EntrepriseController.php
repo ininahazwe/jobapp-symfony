@@ -9,9 +9,9 @@ use App\Entity\Offre;
 use App\Entity\User;
 use App\Form\EntrepriseType;
 use App\Form\OffreType;
-use App\Form\SearchForm;
 use App\Form\UserType;
 use App\Repository\EntrepriseRepository;
+use App\Repository\FactureRepository;
 use App\Repository\ModeleOffreCommercialeRepository;
 use App\Repository\UserRepository;
 use Exception;
@@ -23,7 +23,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Message;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -153,6 +152,18 @@ class EntrepriseController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/factures', name: 'entreprise_factures')]
+    public function factures(Request $request, Entreprise $entreprise, FactureRepository $factureRepository): Response
+    {
+        $factures = $factureRepository->findBy([
+            'entreprise' => $entreprise,
+        ]);
+        return $this->render('entreprise/factures.html.twig', [
+            'entreprise' =>$entreprise,
+            'factures' => $factures,
+        ]);
+    }
+
     #[Route('/{id}/recruteur', name: 'entreprise_recruteurs', methods: ['GET', 'POST'])]
     public function recruteurs(Request $request, Entreprise $entreprise): Response
     {
@@ -212,8 +223,7 @@ class EntrepriseController extends AbstractController
                 );
             }
             $user->setActivationToken(md5(uniqid()));
-
-
+            $user->setForgotPasswordTokenRequestedAt(new \DateTimeImmutable('now'));
 
             if ($superRecruteur){
                 $entreprise->addSuperRecruteur($user);
@@ -254,6 +264,86 @@ class EntrepriseController extends AbstractController
 
         //return $this->redirect($this->generateUrl('entreprise_recruteurs',['id' => $entreprise->getId()]));
     }
+
+
+    /**
+     * @param $userID
+     * @param Request $request
+     * @param Entreprise $entreprise
+     * @param UserRepository $userRepository
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param MailerInterface $mailer
+     * @return Response
+     * @throws TransportExceptionInterface
+     */
+    #[Route('/{id}/recruteur/generateMDP/{userID}', name: 'entreprise_recruteurs_generateMDP', methods: ['GET', 'POST'])]
+    public function generateMDPRecruteurs(
+        $userID, Request $request,
+        Entreprise $entreprise,
+        UserRepository $userRepository,
+        UserPasswordEncoderInterface $passwordEncoder,
+        MailerInterface $mailer): Response
+    {
+        $password = $userRepository->genererMDP();
+        $user = $userRepository->find($userID);
+
+        $user->setPassword(
+            $passwordEncoder->encodePassword(
+                $user,
+                $password
+            )
+        );
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $email = (new TemplatedEmail())
+            ->from('haha@gmail.com')
+            ->to($user->getEmail())
+            ->subject('Modification de mot de passe')
+            ->text('Sending emails is fun again!')
+            ->htmlTemplate('emails/modification_mot_passe.html.twig')
+            ->context([
+                'password' => $password, 'user' => $user,
+            ])
+        ;
+
+        $mailer->send($email);
+
+        $this->addFlash('success', 'Le mot de passe a été généré avec succès');
+        return $this->redirectToRoute('entreprise_recruteurs',['id' => $entreprise->getId()], Response::HTTP_SEE_OTHER);
+
+
+    }
+
+    #[Route('/{id}/recruteur/deleteRecruteur/{userID}', name: 'entreprise_recruteurs_delete', methods: ['GET', 'POST'])]
+    public function deleteRecruteur(
+        $userID, Request $request,
+        Entreprise $entreprise,
+        UserRepository $userRepository,
+        UserPasswordEncoderInterface $passwordEncoder,
+        MailerInterface $mailer): Response
+    {
+        $user = $userRepository->find($userID);
+        $entityManager = $this->getDoctrine()->getManager();
+        if ($entreprise->getRecruteurs()->contains($user)){
+            $entreprise->removeRecruteur($user);
+        }
+
+        if ($entreprise->getSuperRecruteurs()->contains($user)){
+            $entreprise->removeSuperRecruteur($user);
+        }
+
+        $entityManager->persist($entreprise);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'La suppression du recruteur '. $user->getFullname() .' a été faite avec succès');
+        return $this->redirectToRoute('entreprise_recruteurs',['id' => $entreprise->getId()], Response::HTTP_SEE_OTHER);
+
+
+    }
+
     #[Route('/{id}', name: 'entreprise_delete', methods: ['POST'])]
     public function delete(Request $request, Entreprise $entreprise): Response
     {

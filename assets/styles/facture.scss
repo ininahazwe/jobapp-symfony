@@ -1,0 +1,10 @@
+.facture-entete{
+  display: grid;
+  grid-auto-columns: 1fr 1fr;
+}
+.facture_client{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 200px;
+}
