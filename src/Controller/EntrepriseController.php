@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Data\SearchData;
 use App\Entity\Entreprise;
 use App\Entity\File;
 use App\Entity\Offre;
@@ -118,6 +117,9 @@ class EntrepriseController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Route('/{id}/save/offre', name: 'entreprise_save_offre', methods: ['GET', 'POST'])]
     public function creationOffre(Request $request, Entreprise $entreprise, ModeleOffreCommercialeRepository $modeleOffreCommercialeRepository): Response
     {
@@ -265,7 +267,6 @@ class EntrepriseController extends AbstractController
         //return $this->redirect($this->generateUrl('entreprise_recruteurs',['id' => $entreprise->getId()]));
     }
 
-
     /**
      * @param $userID
      * @param Request $request
@@ -277,12 +278,7 @@ class EntrepriseController extends AbstractController
      * @throws TransportExceptionInterface
      */
     #[Route('/{id}/recruteur/generateMDP/{userID}', name: 'entreprise_recruteurs_generateMDP', methods: ['GET', 'POST'])]
-    public function generateMDPRecruteurs(
-        $userID, Request $request,
-        Entreprise $entreprise,
-        UserRepository $userRepository,
-        UserPasswordEncoderInterface $passwordEncoder,
-        MailerInterface $mailer): Response
+    public function generateMDPRecruteurs($userID, Request $request, Entreprise $entreprise, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder, MailerInterface $mailer): Response
     {
         $password = $userRepository->genererMDP();
         $user = $userRepository->find($userID);
@@ -313,17 +309,19 @@ class EntrepriseController extends AbstractController
 
         $this->addFlash('success', 'Le mot de passe a été généré avec succès');
         return $this->redirectToRoute('entreprise_recruteurs',['id' => $entreprise->getId()], Response::HTTP_SEE_OTHER);
-
-
     }
 
+    /**
+     * @param $userID
+     * @param Request $request
+     * @param Entreprise $entreprise
+     * @param UserRepository $userRepository
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param MailerInterface $mailer
+     * @return Response
+     */
     #[Route('/{id}/recruteur/deleteRecruteur/{userID}', name: 'entreprise_recruteurs_delete', methods: ['GET', 'POST'])]
-    public function deleteRecruteur(
-        $userID, Request $request,
-        Entreprise $entreprise,
-        UserRepository $userRepository,
-        UserPasswordEncoderInterface $passwordEncoder,
-        MailerInterface $mailer): Response
+    public function deleteRecruteur($userID, Request $request, Entreprise $entreprise, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder, MailerInterface $mailer): Response
     {
         $user = $userRepository->find($userID);
         $entityManager = $this->getDoctrine()->getManager();
@@ -340,8 +338,6 @@ class EntrepriseController extends AbstractController
 
         $this->addFlash('success', 'La suppression du recruteur '. $user->getFullname() .' a été faite avec succès');
         return $this->redirectToRoute('entreprise_recruteurs',['id' => $entreprise->getId()], Response::HTTP_SEE_OTHER);
-
-
     }
 
     #[Route('/{id}', name: 'entreprise_delete', methods: ['POST'])]

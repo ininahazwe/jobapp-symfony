@@ -2,22 +2,63 @@
 
 {% block title %}Facture {{ facture.entreprise }}{% endblock %}
 {% block body %}
+    <style>
+        .entete{
+            width: 100%;
+        }
+        .prestataire, .client{
+            display: inline-block;
+            vertical-align: top;
+        }
+        .prestataire{
+            width: 50%;
+        }
+        .client{
+            width: 50%;
+        }
+        .client span{
+            margin-top: 30px;
+        }
+        .titre{
+            text-align: center;
+        }
+        .table{
+            width: 100%;
+        }
+        .table thead tr{
+            background: lightgray;
+        }
+        table tbody tr{
+            text-align: center;
+            border-bottom: 1px solid grey;
+        }
+        .table2{
+            margin-top: 20px;
+            width: 60%;
+            float: right;
+
+        }
+        /*.table2 tr{
+            background: whitesmoke;
+        }*/
+        .table2 td{
+            border-bottom: 1px solid gray;
+        }
+    </style>
     <div class="container">
-        <img src="{{ asset('assets/img/logo.png') }}">
-        <div class="facture-entete">
-            <div class="facture_prestataire">
+        {#<img src="{{ absolute_url(asset('assets/img/logo.png')) }}">#}
+        <div class="entete">
+            <div class="prestataire">
                 <b>Prestataire</b>
-                <span>
+                <p>
                 HandiCV<br>
                 10 rue des tuilières<br>
                 06800 Cagnes sur mer
-                </span>
+                </p>
             </div>
-            <div class="facture_client">
-                <span>
-                    <b>Client</b>
-                    {{ facture.entreprise }}
-                </span>
+            <div class="client">
+                <b>Client</b>
+                <p>{{ facture.entreprise }}</p>
 
                 <span>
                     Facture n° {{ facture }}<br>
@@ -25,42 +66,62 @@
                 </span>
             </div>
         </div>
-
-        <div class="row">
-            <h1 class="text-center">Facture {{ facture }}</h1>
-        </div>
-
-        <div class="facture-description">
-            <table>
+    </div>
+    <div class="container">
+        {#<img src="{{ absolute_url(asset('assets/img/logo.png')) }}">#}
+        <div class="titre">
+            <h1>Facture {{ facture }}</h1>
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Description</th>
-                        <th>Prix unitaire</th>
-                        <th>Quantité</th>
-                        <th>Total</th>
+                        <th>Période</th>
+                        <th>Prix unitaire (EUR)</th>
                     </tr>
                 </thead>
                 <tbody>
+                {% for offre in facture.offre %}
                     <tr>
-                        <td></td>
-                        <td>{{ facture.prix }}</td>
-                        <td></td>
-                        <td>{{ facture.prixTTC }}</td>
+                        <td>
+                            {{ offre.formule }}
+                        </td>
+                        <td>De {{ offre.debutContratAt|date('d-m-Y') }}<br> à {{ offre.finContratAt|date('d-m-Y') }}</td>
+                        <td>{{ offre.prix }} €</td>
                     </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <table class="table2" cellspacing="0px" cellpadding="0px">
+                <tbody>
+                    <tr class="ligne">
+                        <td><b>Sous-total</b></td>
+                        <td>{{ facture.prix }} €</td>
+                    </tr>
+                    <tr>
+                        <td>TVA {{ facture.tVA }}%</td>
+                        <td>{{ facture.prixTVA() }} €</td>
+                    </tr>
+                    <tr>
+                        <td><b>Total</b></td>
+                        <td>{{ facture.prixTTC }} €</td>
+                    </tr>
+                    <tr>
+                        <td>Montant à payer</td>
+                        <td>
+                            {{ not facture.isPaidOk ? facture.prixTTC : '0' }} €
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Montant payé</td>
+                        <td>
+                            {{ facture.isPaidOk ? facture.prixTTC : '0' }} €
+                        </td>
+                    </tr>
+
                 </tbody>
             </table>
         </div>
     </div>
-    <style>
-        .facture-entete{
-            display: grid;
-            grid-auto-columns: 1fr 1fr;
-        }
-        .facture_client{
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 200px;
-        }
-    </style>
+
+
 {% endblock %}

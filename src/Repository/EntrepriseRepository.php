@@ -25,7 +25,11 @@ class EntrepriseRepository extends ServiceEntityRepository
         $this->paginator = $paginator;
     }
 
-    public function getNbMaxRecruteurs($entreprise = null)
+    /**
+     * @param null $entreprise
+     * @return mixed
+     */
+    public function getNbMaxRecruteurs($entreprise = null): mixed
     {
         $now = new \DateTime('now');
         $nombre = 0;
@@ -51,7 +55,6 @@ class EntrepriseRepository extends ServiceEntityRepository
         }
         return $nombre;
     }
-
 
     /**
      * @param SearchData $search

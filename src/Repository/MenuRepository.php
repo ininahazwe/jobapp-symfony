@@ -18,12 +18,11 @@ class MenuRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Menu::class);
     }
-     /**
-      * @return Menu[] Returns an array of Annonce objects
-      */
 
+    /**
+     * @return array
+     */
     public function getAllMenus():array
-
     {
         return $this->createQueryBuilder('m')
 
@@ -38,12 +37,11 @@ class MenuRepository extends ServiceEntityRepository
         ;
     }
 
+
     /**
-     * @return Menu[] Returns an array of Annonce objects
+     * @return array
      */
-
     public function getAllFooters():array
-
     {
         return $this->createQueryBuilder('m')
 
@@ -57,10 +55,13 @@ class MenuRepository extends ServiceEntityRepository
             ->getResult()
             ;
     }
-    /**
-     * @return Menu[] Returns an array of Annonce objects
-     */
 
+
+    /**
+     * @param null $menu
+     * @param null $niveau
+     * @return array
+     */
     public function getNiveauMenu($menu = null, $niveau = null ):array
     {
         return $this->createQueryBuilder('m')
