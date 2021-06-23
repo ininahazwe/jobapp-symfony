@@ -28,6 +28,7 @@ class AnnonceRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.isActive = true')
+            ->addOrderBy('a.createdAt', 'DESC')
             ->getQuery();
      }
     /**

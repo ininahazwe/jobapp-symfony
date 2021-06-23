@@ -35,6 +35,12 @@ class File
     private ?User $user;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Dictionnaire::class, inversedBy="dictionnaire")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private ?Dictionnaire $dictionnaire;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private ?string $nameFile;
@@ -83,6 +89,18 @@ class File
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getDictionnaire(): ?Dictionnaire
+    {
+        return $this->dictionnaire;
+    }
+
+    public function setDictionnaire(?Dictionnaire $dictionnaire): self
+    {
+        $this->dictionnaire = $dictionnaire;
 
         return $this;
     }

@@ -3,11 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\DictionnaireRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=DictionnaireRepository::class)
- * @ORM\Table(name="dictionary")
+ * @ORM\Table(name="dictionnaire")
  */
 class Dictionnaire
 {
@@ -56,10 +58,37 @@ class Dictionnaire
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="Dictionnaire", inversedBy="children")
-     * @ORM\JoinColumn(name="file_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     * @ORM\OneToMany(targetEntity=File::class, mappedBy="dictionnaire", orphanRemoval=true, cascade={"persist"})
      */
-    private $file;
+    private Collection $files;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Annonce::class, mappedBy="diplome")
+     */
+    private Collection $annonces;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Annonce::class, mappedBy="experience")
+     */
+    private Collection $annonces_experience;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Annonce::class, mappedBy="type_contrat")
+     */
+    private Collection $annonces_type_contrat;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Annonce::class, mappedBy="Location")
+     */
+    private Collection $annonces_location;
+
+    public function __construct()
+    {
+        $this->annonces = new ArrayCollection();
+        $this->annonces_experience = new ArrayCollection();
+        $this->annonces_type_contrat = new ArrayCollection();
+        $this->annonces_location = new ArrayCollection();
+    }
 
     public function setId($id)
     {
@@ -85,16 +114,6 @@ class Dictionnaire
     {
         return $this->value;
     }
-
-    public function getFile() {
-        return $this->file;
-    }
-
-    public function setFile($file) {
-        $this->file = $file;
-    }
-
-
 
     /**
      * Get list of availability statuses
@@ -271,7 +290,7 @@ class Dictionnaire
             Dictionnaire::TYPE_START => 'debut',
             Dictionnaire::TYPE_BUDGET => 'budget',
             Dictionnaire::TYPE_SECTEUR => 'secteur',
-            Dictionnaire::TYPE_DURATOIN  => 'duration',
+            Dictionnaire::TYPE_DURATION  => 'duration',
             Dictionnaire::TYPE_REFUS  => 'refus',
             Dictionnaire::TYPE_METIER  => 'Categorie Metier',
             Dictionnaire::TYPE_ENTITE  => 'Entité',
@@ -289,5 +308,119 @@ class Dictionnaire
             Dictionnaire::TYPE_FORMATION4  => 'Formation4',
             Dictionnaire::TYPE_FORMATION5  => 'Formation5',
         );
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getAnnonces(): Collection
+    {
+        return $this->annonces;
+    }
+
+    public function addAnnonce(Annonce $annonce): self
+    {
+        if (!$this->annonces->contains($annonce)) {
+            $this->annonces[] = $annonce;
+            $annonce->setDiplome($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnnonce(Annonce $annonce): self
+    {
+        if ($this->annonces->removeElement($annonce)) {
+            // set the owning side to null (unless already changed)
+            if ($annonce->getDiplome() === $this) {
+                $annonce->setDiplome(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getAnnoncesExperience(): Collection
+    {
+        return $this->annonces_experience;
+    }
+
+    public function addAnnoncesExperience(Annonce $annoncesExperience): self
+    {
+        if (!$this->annonces_experience->contains($annoncesExperience)) {
+            $this->annonces_experience[] = $annoncesExperience;
+            $annoncesExperience->setExperience($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnnoncesExperience(Annonce $annoncesExperience): self
+    {
+        if ($this->annonces_experience->removeElement($annoncesExperience)) {
+            // set the owning side to null (unless already changed)
+            if ($annoncesExperience->getExperience() === $this) {
+                $annoncesExperience->setExperience(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getAnnoncesTypeContrat(): Collection
+    {
+        return $this->annonces_type_contrat;
+    }
+
+    public function addAnnoncesTypeContrat(Annonce $annoncesTypeContrat): self
+    {
+        if (!$this->annonces_type_contrat->contains($annoncesTypeContrat)) {
+            $this->annonces_type_contrat[] = $annoncesTypeContrat;
+            $annoncesTypeContrat->addTypeContrat($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnnoncesTypeContrat(Annonce $annoncesTypeContrat): self
+    {
+        if ($this->annonces_type_contrat->removeElement($annoncesTypeContrat)) {
+            $annoncesTypeContrat->removeTypeContrat($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getAnnoncesLocation(): Collection
+    {
+        return $this->annonces_location;
+    }
+
+    public function addAnnoncesLocation(Annonce $annoncesLocation): self
+    {
+        if (!$this->annonces_location->contains($annoncesLocation)) {
+            $this->annonces_location[] = $annoncesLocation;
+            $annoncesLocation->addLocation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnnoncesLocation(Annonce $annoncesLocation): self
+    {
+        if ($this->annonces_location->removeElement($annoncesLocation)) {
+            $annoncesLocation->removeLocation($this);
+        }
+
+        return $this;
     }
 }

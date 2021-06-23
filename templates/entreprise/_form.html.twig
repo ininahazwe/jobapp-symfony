@@ -2,7 +2,7 @@
     {{ form_widget(form) }}
     {# Si la route est "annonces_edit on affiche les images #}
 	{% if app.request.attributes.get('_route') == 'entreprise_edit' %}
-        <h2>Files</h2>
+        <h2>Logo</h2>
         {% for image in entreprise.logo %}
             <div>
                 <img src="{{ asset('/uploads/'~image.name) }}" alt="" width="150">

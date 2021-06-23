@@ -31,18 +31,12 @@ class EntrepriseController extends AbstractController
     #[Route('/', name: 'entreprise_index', methods: ['GET'])]
     public function index(Request $request, EntrepriseRepository $entrepriseRepository, PaginatorInterface $paginator): Response
     {
-        /*$data = new SearchData();
-        $data->page = $request->get('page', 1);
-        $form = $this->createForm(SearchForm::class, $data);
-        $form->handleRequest($request);*/
-
-        //$entreprises = $entrepriseRepository->getAllEntreprisesAdmin($this->getUser()->getId());
-        $entreprises = $entrepriseRepository->findAll();
-        /*$entreprises = $paginator->paginate(
-            $entreprisedata,
+        $data = $entrepriseRepository->findAll();
+        $entreprises = $paginator->paginate(
+            $data,
             $request->query->getInt('page', 1),
             10
-        );*/
+        );
 
         if($this->getUser()->isSuperRecruteur()){
             if(count($entreprises) == 1 ){
@@ -53,20 +47,22 @@ class EntrepriseController extends AbstractController
 
         return $this->render('entreprise/index.html.twig', [
             'entreprises' => $entreprises,
-            //'form' => $form->createView()
         ]);
     }
 
     #[Route('/new', name: 'entreprise_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ModeleOffreCommercialeRepository $modeleOffreCommercialeRepository): Response
+    public function new(Request $request, ModeleOffreCommercialeRepository $modeleOffreCommercialeRepository, EntrepriseRepository $entrepriseRepository): Response
     {
         $entreprise = new Entreprise();
         $form = $this->createForm(EntrepriseType::class, $entreprise);
         $form->handleRequest($request);
+        $ref = $entrepriseRepository->genererRef();
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->uploadFile($form->get('logo')->getData(), $entreprise);
-
+            if ($form->get('logo')->getData()){
+                $this->uploadFile($form->get('logo')->getData(), $entreprise);
+            }
+            $entreprise->setRefClient($ref);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($entreprise);
             $entityManager->flush();
@@ -121,7 +117,7 @@ class EntrepriseController extends AbstractController
      * @throws Exception
      */
     #[Route('/{id}/save/offre', name: 'entreprise_save_offre', methods: ['GET', 'POST'])]
-    public function creationOffre(Request $request, Entreprise $entreprise, ModeleOffreCommercialeRepository $modeleOffreCommercialeRepository): Response
+    public function creationOffre(Request $request, Entreprise $entreprise): Response
     {
         $modeleId = $request->get('modeleId');
         if (!$modeleId){
@@ -139,8 +135,9 @@ class EntrepriseController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->uploadFile($form->get('logo')->getData(), $entreprise);
-
+            if ($form->get('logo')->getData()){
+                $this->uploadFile($form->get('logo')->getData(), $entreprise);
+            }
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($entreprise);
             $entityManager->flush();
@@ -398,6 +395,7 @@ class EntrepriseController extends AbstractController
         $formule->setNombreRecruteurs($modele->getNombreRecruteurs());
         $formule->setDebutContratAt($now);
         $formule->setFinContratAt($dateFin);
+        $formule->setIsFacture(0);
         $formule->setModeleOffreCommerciale($modele);
         $entityManager->persist($formule);
 

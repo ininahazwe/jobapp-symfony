@@ -189,16 +189,21 @@ class User implements UserInterface
      */
     private Collection $files;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Annonce::class, mappedBy="auteur")
+     */
+    private Collection $annonces_auteurs;
+
     public function __construct()
     {
         $this->isTermsClients = false;
         $this->roles = ['ROLE_CANDIDAT'];
         $this->annonces = new ArrayCollection();
         $this->candidatures = new ArrayCollection();
-        $this->createdAt = new DateTimeImmutable('now');
         $this->entreprises = new ArrayCollection();
         $this->recruteurs_entreprise = new ArrayCollection();
         $this->files = new ArrayCollection();
+        $this->annonces_auteurs = new ArrayCollection();
     }
 
     public function getEmail(): string
@@ -646,6 +651,33 @@ class User implements UserInterface
             if ($file->getEntreprise() === $this) {
                 $file->setEntreprise(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Annonce[]
+     */
+    public function getAnnoncesAuteurs(): Collection
+    {
+        return $this->annonces_auteurs;
+    }
+
+    public function addAnnoncesAuteur(Annonce $annoncesAuteur): self
+    {
+        if (!$this->annonces_auteurs->contains($annoncesAuteur)) {
+            $this->annonces_auteurs[] = $annoncesAuteur;
+            $annoncesAuteur->addAuteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnnoncesAuteur(Annonce $annoncesAuteur): self
+    {
+        if ($this->annonces_auteurs->removeElement($annoncesAuteur)) {
+            $annoncesAuteur->removeAuteur($this);
         }
 
         return $this;

@@ -19,13 +19,13 @@
     <section class="inner-page">
 
         <div class="container">
-            <h1>{{ annonce.author.fullname }} cherche un.e {{ annonce.name }}</h1>
+            <h1>{{ annonce.entreprise }} cherche un.e {{ annonce.name }}</h1>
 
             <div class="portfolio-info">
                 <h3>Project information</h3>
                 <ul>
                     <li><strong>Titre du poste</strong>: {{ annonce.name }}</li>
-                    <li><strong>Client</strong>: ASU Company</li>
+                    <li><strong>Client</strong>: {{ annonce.entreprise }}</li>
                     <li><strong>Date de publication</strong>: {{ annonce.createdAt|date }}</li>
                  </ul>
             </div>

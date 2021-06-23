@@ -3,6 +3,7 @@
 namespace App\Controller\Recruteur;
 
 use App\Entity\Annonce;
+use App\Entity\User;
 use App\Form\AnnonceType;
 use App\Repository\AnnonceRepository;
 use Knp\Component\Pager\PaginatorInterface;
@@ -22,7 +23,7 @@ class AnnonceController extends AbstractController
         $annonces = $paginator->paginate(
             $data,
             $request->query->getInt('page', 1),
-            2
+            10
         );
 
         return $this->render('annonce/index.html.twig', [
@@ -33,12 +34,15 @@ class AnnonceController extends AbstractController
     #[Route('/new', name: 'annonce_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        $entityManager = $this->getDoctrine()->getManager();
         $annonce = new Annonce();
-        $form = $this->createForm(AnnonceType::class, $annonce);
+        $form = $this->createForm(AnnonceType::class ,$annonce);
+
+        //$form = $this->createForm(AnnonceType::class, $annonce);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
+
             $entityManager->persist($annonce);
             $entityManager->flush();
 

@@ -18,7 +18,11 @@ class OffreRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Offre::class);
     }
-    public function getOffresActiveNotFactured()
+
+    /**
+     * @return mixed
+     */
+    public function getOffresActiveNotFactured(): mixed
     {
         $now = new \DateTime('now');
         $query = $this->createQueryBuilder('o')
@@ -31,9 +35,14 @@ class OffreRepository extends ServiceEntityRepository
         return $query->getQuery()
             ->getResult()
             ;
-
     }
-    public function getOffreActiveNotFactured($entreprise, $prix = false)
+
+    /**
+     * @param $entreprise
+     * @param false $prix
+     * @return mixed
+     */
+    public function getOffreActiveNotFactured($entreprise, bool $prix = false): mixed
     {
     $now = new \DateTime('now');
     $query = $this->createQueryBuilder('o')
@@ -45,22 +54,25 @@ class OffreRepository extends ServiceEntityRepository
         ->setParameter('entreprise' , $entreprise)
         ->setParameter('date' , $now);
 
-    if ($prix){
-        $price = 0 ;
-        $result = $query->getQuery()->getResult();
-        foreach ($result as $item){
-            $price += $item->getPrix();
+        if ($prix){
+            $price = 0 ;
+            $result = $query->getQuery()->getResult();
+            foreach ($result as $item){
+                $price += $item->getPrix();
+            }
+
+            return $price;
         }
 
-        return $price;
-    }
     return $query->getQuery()
         ->getResult()
         ;
+    }
 
-}
-
-    public function genererRef()
+    /**
+     * @return int|string
+     */
+    public function genererRef(): int|string
     {
 
         $query = $this->getEntityManager()->getRepository('App\Entity\Facture')->createQueryBuilder('f');

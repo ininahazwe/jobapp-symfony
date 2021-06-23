@@ -86,12 +86,17 @@ class Entreprise
     /**
      * @ORM\OneToMany(targetEntity=Facture::class, mappedBy="entreprise")
      */
-    private $factures;
+    private Collection $factures;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $ref_client;
+    private ?string $ref_client;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Annonce::class, mappedBy="entreprise")
+     */
+    private $annonces_entreprise;
 
     public function __construct()
     {
@@ -101,6 +106,7 @@ class Entreprise
         $this->super_recruteurs = new ArrayCollection();
         $this->logo = new ArrayCollection();
         $this->factures = new ArrayCollection();
+        $this->annonces_entreprise = new ArrayCollection();
     }
 
     /**
@@ -329,7 +335,7 @@ class Entreprise
     }
 
     /**
-     * @return Collection|Facture[]
+     * @return Collection
      */
     public function getFactures(): Collection
     {
@@ -366,6 +372,36 @@ class Entreprise
     public function setRefClient(?string $ref_client): self
     {
         $this->ref_client = $ref_client;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Annonce[]
+     */
+    public function getAnnoncesEntreprise(): Collection
+    {
+        return $this->annonces_entreprise;
+    }
+
+    public function addAnnoncesEntreprise(Annonce $annoncesEntreprise): self
+    {
+        if (!$this->annonces_entreprise->contains($annoncesEntreprise)) {
+            $this->annonces_entreprise[] = $annoncesEntreprise;
+            $annoncesEntreprise->setEntreprise($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnnoncesEntreprise(Annonce $annoncesEntreprise): self
+    {
+        if ($this->annonces_entreprise->removeElement($annoncesEntreprise)) {
+            // set the owning side to null (unless already changed)
+            if ($annoncesEntreprise->getEntreprise() === $this) {
+                $annoncesEntreprise->setEntreprise(null);
+            }
+        }
 
         return $this;
     }

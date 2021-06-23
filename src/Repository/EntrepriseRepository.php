@@ -112,6 +112,52 @@ class EntrepriseRepository extends ServiceEntityRepository
         }
 
     }
+
+    /**
+     * @return int|string
+     */
+    public function genererRef(): int|string
+    {
+        $query = $this->getEntityManager()->getRepository('App\Entity\Entreprise')->createQueryBuilder('e');
+        $query->addOrderBy('e.id' ,'DESC')
+            ->setMaxResults(1);
+
+        $entreprise = current($query->getQuery()->getResult());
+
+
+        $referance = "10000001";
+        if ($entreprise){
+            $int_value = (int) $entreprise->getRefClient();
+            $referance = $int_value + 1;
+        }
+
+        return $referance ;
+    }
+
+    /**
+     * @param $user
+     * @return mixed
+     */
+    public function filtrerEntrepriseParUtilisateur($userId): mixed
+    {
+         $user = $this->getEntityManager()->getRepository('App\Entity\User')->find($userId);
+        if ($user->isSuperAdmin())
+        {
+            $query = $this->createQueryBuilder('e')
+                ->andWhere('e.id = 1');
+        }elseif ($user->isRecruteur()){
+            $query = $this->createQueryBuilder('e')
+                ->andWhere('e.id = 2');
+        }
+        else{
+            $query = $this->createQueryBuilder('e')
+                ->andWhere('e.id = 3');
+        }
+
+
+        return $query;
+    }
+
     // /**
     //  * @return Entreprise[] Returns an array of Entreprise objects
     //  */
