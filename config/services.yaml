@@ -45,5 +45,3 @@ services:
     App\Service\FileUploader:
         arguments:
             $targetDirectory: '%logo_directory%'
-    App\Entity\User:
-        autowire: true

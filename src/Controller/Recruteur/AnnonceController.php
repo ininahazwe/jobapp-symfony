@@ -17,7 +17,7 @@ class AnnonceController extends AbstractController
     #[Route('/index', name: 'annonce_index', methods: ['GET'])]
     public function index(Request $request, AnnonceRepository $annonceRepository, PaginatorInterface $paginator): Response
     {
-        $data = $annonceRepository->findAllActiveQuery();
+        $data = $annonceRepository->findAllActiveQuery($this->getUser());
 
         $annonces = $paginator->paginate(
             $data,
@@ -36,7 +36,7 @@ class AnnonceController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $annonce = new Annonce();
         $form = $this->createForm(AnnonceType::class ,$annonce, [
-                'user' => $this->getUser()
+                'user' => $this->getUser(),
                 ]
             );
         $form->handleRequest($request);
@@ -64,13 +64,13 @@ class AnnonceController extends AbstractController
         ]);
     }
 
-
-
     #[Route('/{id}/edit', name: 'annonce_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Annonce $annonce): Response
     {
-        $this->denyAccessUnlessGranted('annonce_edit', $annonce);
-        $form = $this->createForm(AnnonceType::class, $annonce);
+        $form = $this->createForm(AnnonceType::class ,$annonce, [
+                'user' => $this->getUser(),
+            ]
+        );
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

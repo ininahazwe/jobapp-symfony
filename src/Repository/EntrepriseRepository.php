@@ -51,7 +51,6 @@ class EntrepriseRepository extends ServiceEntityRepository
             }else{
                 $nombre = 0;
             }
-
         }
         return $nombre;
     }
@@ -138,52 +137,41 @@ class EntrepriseRepository extends ServiceEntityRepository
      * @param $user
      * @return mixed
      */
-    public function filtrerEntrepriseParUtilisateur($userId): mixed
+    public function getEntreprisesUser($user): mixed
     {
-         $user = $this->getEntityManager()->getRepository('App\Entity\User')->find($userId);
-        if ($user->isSuperAdmin())
+        $ids = array();
+
+        if ($user->isSuperAdmin() ){
+            $query = $this->createQueryBuilder('d')
+                ->select('d')
+                ->orderBy('d.name' ,  'ASC');
+            return $query;
+        }elseif($user->isSuperRecruteur()){
+            $ids = array();
+            foreach($user->getRecruteursEntreprise() as $entreprise){
+                if (!in_array($entreprise->getId(), $ids)){
+                    $ids[$entreprise->getId()] = $entreprise->getId();
+                }
+            }
+            foreach($user->getEntreprises() as $entreprise){
+                if (!in_array($entreprise->getId(), $ids)){
+                    $ids[$entreprise->getId()] = $entreprise->getId();
+                }
+            }
+        }elseif($user->isRecruteur())
         {
-            $query = $this->createQueryBuilder('e')
-                ->andWhere('e.id = 1');
-        }elseif ($user->isRecruteur()){
-            $query = $this->createQueryBuilder('e')
-                ->andWhere('e.id = 2');
+            foreach($user->getEntreprises() as $entreprise){
+                if (!in_array($entreprise->getId(), $ids)){
+                    $ids[$entreprise->getId()] = $entreprise->getId();
+                }
+            }
+
         }
-        else{
-            $query = $this->createQueryBuilder('e')
-                ->andWhere('e.id = 3');
-        }
-
-
-        return $query;
+        $query = $this->createQueryBuilder('d')
+            ->andWhere('d.id IN (:ids)')
+            ->orderBy('d.name' ,  'ASC')
+            ->setParameter('ids',$ids)
+            ;
+         return $query;
     }
-
-    // /**
-    //  * @return Entreprise[] Returns an array of Entreprise objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('e.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Entreprise
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

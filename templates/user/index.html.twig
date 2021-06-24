@@ -36,8 +36,10 @@
                             <div class="col"><div class="p-3 border bg-light "><a href="{{ path('annonce_index') }}">Annonces</a></div></div>
                             <div class="col"><div class="p-3 border bg-light "><a href="{{ path('candidature_index') }}">Candidatures</a></div></div>
                             <div class="col"><div class="p-3 border bg-light "><a href="{{ path('entreprise_index') }}">Entreprises</a></div></div>
-                            <div class="col"><div class="p-3 border bg-light "><a href="{{ path('user_creation') }}">Recruteurs</a></div></div>
+                            {#<div class="col"><div class="p-3 border bg-light "><a href="{{ path('user_creation') }}">Recruteurs</a></div></div>#}
                         </div>
+                        {{ app.user.getRecruteursEntreprise()|join(' - ')}}
+                        {{ app.user }}
                         {% endif %}
                         {% if app.user.isRecruteur() %}
                         <div class="row row-cols-3 g-lg-3">
@@ -63,9 +65,18 @@
                             {{ app.user.getRoleName() }}
                             </span>
                         </div>
+
                         <b class="p-1">{{ app.user.getFullname()|upper }}</b>
                         <a href="{{ path('app_profile_edit') }}" class="btn btn-primary px-4 ms-3">Modifier mes infos</a>
                         <p class="text-center pt-3"><a href="{{ path('pass_modifier', {id: user.id}) }}">Changer le mot de passe</a></p>
+
+                        {% if not app.user.isCandidat() %}
+                            <div>
+
+                            {{ app.user.getOneRecruteurEntreprise()|raw }}
+
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

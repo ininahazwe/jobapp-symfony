@@ -42,7 +42,7 @@ class AnnoncesVoter extends Voter
 
         //Vérification de l'auteur de l'annonce
 
-        if(null === $annonce->getAuthor()) return false;
+        if(null === $annonce->getAuteur()) return false;
 
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
@@ -61,7 +61,7 @@ class AnnoncesVoter extends Voter
 
     private function canEdit(Annonce $annonce, User $user): bool
     {
-        return $user === $annonce->getAuthor();
+        return $user === $annonce->getAuteur();
     }
 
     private function canDelete(): bool

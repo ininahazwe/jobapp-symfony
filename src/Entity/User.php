@@ -160,11 +160,6 @@ class User implements UserInterface
     private ?DateTimeImmutable $forgotPasswordTokenVerifiedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity=Annonce::class, mappedBy="author")
-     */
-    private Collection $annonces;
-
-    /**
      * @ORM\OneToMany(targetEntity=Candidature::class, mappedBy="candidat")
      */
     private Collection $candidatures;
@@ -198,7 +193,6 @@ class User implements UserInterface
     {
         $this->isTermsClients = false;
         $this->roles = ['ROLE_CANDIDAT'];
-        $this->annonces = new ArrayCollection();
         $this->candidatures = new ArrayCollection();
         $this->entreprises = new ArrayCollection();
         $this->recruteurs_entreprise = new ArrayCollection();
@@ -370,11 +364,29 @@ class User implements UserInterface
         return $this;
     }
 
-    public function __toString()
+    /**
+     * @return string
+     */
+    public function __toString(): string
     {
         return $this->getEmail();
     }
+    public function getOneRecruteurEntreprise(): string
+    {
+        $result = array();
+        foreach($this->getEntreprises() as $entreprise){
+            $result[] ="<b>Recruteur</b>" . ' ' . $entreprise->getName() . '<br/>';
+        }
+        foreach($this->getRecruteursEntreprise() as $entreprise){
+            $result[] ="<b>Super Recruteur</b>" . ' ' . $entreprise->getName() . '<br/>';
+        }
 
+        return $this->getEmail() . "<br/><br>" . implode('<br/>', $result);
+    }
+
+    /**
+     * @return string
+     */
     public function getFullname(): string
     {
         return $this->getFirstName().' '.$this->getLastName();
@@ -396,7 +408,6 @@ class User implements UserInterface
     {
         $role = "ROLE_SUPER_RECRUTEUR";
         return $this->checkRoles($role);
-
     }
 
     public function isCommunicant(): bool
@@ -437,36 +448,6 @@ class User implements UserInterface
             }
         }
         return false;
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getAnnonces(): Collection
-    {
-        return $this->annonces;
-    }
-
-    public function addAnnonce(Annonce $annonce): self
-    {
-        if (!$this->annonces->contains($annonce)) {
-            $this->annonces[] = $annonce;
-            $annonce->setAuthor($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAnnonce(Annonce $annonce): self
-    {
-        if ($this->annonces->removeElement($annonce)) {
-            // set the owning side to null (unless already changed)
-            if ($annonce->getAuthor() === $this) {
-                $annonce->setAuthor(null);
-            }
-        }
-
-        return $this;
     }
 
     /**

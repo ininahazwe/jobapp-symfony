@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Entreprise;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -24,6 +26,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     /**
      * Used to upgrade (rehash) the user's password automatically over time.
+     * @throws ORMException
      */
     public function upgradePassword(UserInterface $user, string $newEncodedPassword): void
     {
@@ -42,7 +45,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function getRecruteurs($userId): mixed
     {
-        $user = $this->_em->getRepository("App:User")->find($userId);
+        $user = $this->_em->getRepository(User::class)->find($userId);
         if($user->isSuperAdmin()){
             return $this->createQueryBuilder('u')
                 ->orderBy('u.id', 'ASC')
@@ -77,7 +80,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      * @param int $longueur
      * @return string
      */
-    public function genererMDP($longueur = 8): string
+    public function genererMDP(int $longueur = 8): string
     {
         $mdp = "";
 
@@ -103,32 +106,93 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $mdp;
     }
 
-    // /**
-    //  * @return User[] Returns an array of User objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getEntreprisesRecruteur($user)
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?User
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if ($user->isSuperAdmin() ){
+            $query = $this->createQueryBuilder('d')
+                ->select('d');
+            return $query;
+        }elseif ($user->isRecruteur()){
+            $ids = array();
+            foreach($user->getRecruteursEntreprise() as $entreprise){
+                if (!in_array($entreprise->getId(), $ids)){
+                    $ids[] = $entreprise->getId();
+                }
+            }
+            foreach($user->getEntreprises() as $entreprise){
+                if (!in_array($entreprise->getId(), $ids)){
+                    $ids[] = $entreprise->getId();
+                }
+            }
+
+            $repositoryEntreprise = $this->getEntityManager()->getRepository(Entreprise::class)->createQueryBuilder('o');
+            $repositoryEntreprise->andWhere('o.id IN (:ids)')
+                ->setParameter('ids', $ids);
+            $entreprises = $repositoryEntreprise->getQuery()->getResult();
+            $users = array();
+            foreach ($entreprises as $entreprise){
+                    foreach($entreprise->getRecruteurs() as $recruteur) {
+                    if (!in_array($recruteur->getId(), $users)) {
+                        $users[] = $recruteur->getId();
+                    }
+                }
+                foreach($entreprise->getSuperRecruteurs() as $recruteur) {
+                    if (!in_array($recruteur->getId(), $users)) {
+                        $users[] = $recruteur->getId();
+                    }
+                }
+            }
+
+            $query = $this->createQueryBuilder('d')
+                ->andWhere('d.id IN (:ids)')
+                ->setParameter('ids', $users)
+            ;
+            return $query;
+        }else{
+            $query = $this->createQueryBuilder('d')
+                ->andWhere('d.id = 0')
+            ;
+            return $query;
+        }
+        /*elseif($user->isRecruteur()){
+            $ids = array();
+            foreach($user->getEntreprises() as $entreprise){
+                if (!in_array($entreprise->getId(), $ids)){
+                    $ids[] = $entreprise->getId();
+                }
+            }
+
+            $repositoryEntreprise = $this->getEntityManager()->getRepository('App\Entity\Entreprise')->createQueryBuilder('o');
+            $repositoryEntreprise->andWhere('o.id IN (:ids)')
+                //->orderBy('d.name' ,  'ASC')
+                ->setParameter('ids', $ids);
+            $entreprises = $repositoryEntreprise->getQuery()->getResult();
+
+            $users = array();
+            foreach ($entreprises as $entreprise){
+                //dd($entreprise);
+                foreach($entreprise->getRecruteurs() as $recruteur) {
+                    if (!in_array($recruteur->getId(), $users)) {
+                        $users[] = $recruteur->getId();
+                    }
+                }
+                foreach($entreprise->getSuperRecruteurs() as $recruteur) {
+                    if (!in_array($recruteur->getId(), $users)) {
+                        $users[] = $recruteur->getId();
+                    }
+                }
+            }
+
+            $query = $this->createQueryBuilder('d')
+                ->andWhere('d.id IN (:ids)')
+                //->orderBy('d.name' ,  'ASC')
+                ->setParameter('ids', $users)
+            ;
+            return $query;
+        }else{
+            return null;
+        }
+*/
     }
-    */
 }

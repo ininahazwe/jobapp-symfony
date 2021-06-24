@@ -53,6 +53,7 @@ security:
         - { path: ^/cms/menu, roles: ROLE_SUPER_ADMIN_HANDICV }
         - { path: ^/cms/entreprise, roles: ROLE_SUPER_RECRUTEUR }
         - { path: ^/cms/modele-offre-commerciale, roles: ROLE_SUPER_ADMIN_HANDICV }
+        - { path: ^/cms/facture, roles: ROLE_SUPER_ADMIN_HANDICV }
 
     role_hierarchy:
         ROLE_CANDIDAT:

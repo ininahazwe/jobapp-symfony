@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Annonce;
+use App\Entity\User;
+use App\Form\AnnonceType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -21,16 +23,36 @@ class AnnonceRepository extends ServiceEntityRepository
         parent::__construct($registry, Annonce::class);
     }
 
-    /**
-     * @return Query
-     */
-    public function findAllActiveQuery(): Query
+    public function findAllActiveQuery($user)
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.isActive = true')
-            ->addOrderBy('a.createdAt', 'DESC')
-            ->getQuery();
-     }
+        $query = $this->createQueryBuilder('a');
+        if($user->isSuperAdmin()){
+            $query//->andWhere('a.isActive = true')
+                ->addOrderBy('a.createdAt', 'DESC')
+                ->getQuery();
+
+            return $query;
+        } elseif ($user->isRecruteur()){
+            $ids = array();
+            foreach($user->getRecruteursEntreprise() as $entreprise){
+                if (!in_array($entreprise->getId(), $ids)){
+                    $ids[$entreprise->getId()] = $entreprise->getId();
+                }
+            }
+            foreach($user->getEntreprises() as $entreprise){
+                if (!in_array($entreprise->getId(), $ids)){
+                    $ids[$entreprise->getId()] = $entreprise->getId();
+                }
+            }
+            $query->andWhere('a.entreprise IN (:entreprises)')
+                ->addOrderBy('a.createdAt', 'DESC')
+                ->setParameter('entreprises', $ids)
+                ->getQuery();
+
+            return $query;
+        }
+
+    }
     /**
      * @return array
      */
@@ -49,33 +71,4 @@ class AnnonceRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->where('a.isActive = true');
     }
-
-    // /**
-    //  * @return Annonce[] Returns an array of Annonce objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Annonce
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

@@ -71,52 +71,19 @@ class AnnonceType extends AbstractType
             ->add('entreprise', EntityType::class ,[
                 'class' => Entreprise::class,
                 'query_builder' => function($repository) use($user) {
-                    if ($user->isSuperAdmin() ){
-                        $query = $repository->createQueryBuilder('d')
-                            ->select('d')
-                            ->orderBy('d.name' ,  'ASC');
-                        return $query;
-                    }elseif($user->isSuperRecruteur()){
-                        $ids = array();
-                        foreach($user->getRecruteursEntreprise() as $entreprise){
-                            if (!in_array($entreprise->getId(), $ids)){
-                                $ids[$entreprise->getId()] = $entreprise->getId();
-                            }
-                        }
-                        foreach($user->getEntreprises() as $entreprise){
-                            if (!in_array($entreprise->getId(), $ids)){
-                                $ids[$entreprise->getId()] = $entreprise->getId();
-                            }
-                        }
-
-                        $query = $repository->createQueryBuilder('d')
-                            ->andWhere('d.id IN (:ids)')
-                            ->orderBy('d.name' ,  'ASC')
-                            ->setParameter('ids',$ids)
-                        ;
-                    return $query;
-
-                    }elseif($user->isRecruteur())
-                    {
-                        $ids = array();
-                        foreach($user->getEntreprises() as $entreprise){
-                            if (!in_array($entreprise->getId(), $ids)){
-                                $ids[$entreprise->getId()] = $entreprise->getId();
-                            }
-                        }
-
-                        $query = $repository->createQueryBuilder('d')
-                            ->andWhere('d.id IN (:ids)')
-                            ->orderBy('d.name' ,  'ASC')
-                            ->setParameter('ids',$ids)
-                        ;
-                        return $query;
-                    }else{
-                        return null;
-                    }
+                    return $repository->getEntreprisesUser($user);
                 }
             ])
-            //->add('auteur')
+            ->add('auteur', EntityType::class,[
+                'required' => false,
+                'label'	=> "Gestionnaire(s) de l'offre d'emploi",
+                'multiple' => true,
+                'expanded' => true,
+                'class' => User::class,
+                'query_builder' => function($repository) use($user) {
+                    return $repository->getEntreprisesRecruteur($user);
+                }
+            ])
             ->add('reference')
             ->add('dateLimiteCandidature', DateTimeType::class, [
                 'date_widget' => 'single_text',
@@ -142,66 +109,12 @@ class AnnonceType extends AbstractType
             ->add('adresse_email')
             ->add('lien')
             ->add('Valider', SubmitType::class)
-        ;
-        $builder->add('auteur', EntityType::class,[
-            'required' => false,
-            'label'	=> "Gestionnaire(s) de l'offre d'emploi",
-            'multiple' => true,
-            'expanded' => true,
-            'class' => User::class,
-            //'property' => 'firstname',
-            'query_builder' => function($repository) use($user) {
-                if ($user->isSuperAdmin() ){
-                    $query = $repository->createQueryBuilder('d')
-                        ->select('d');
-                        //->orderBy('d.fullName' ,  'ASC');
-                    return $query;
-                }elseif($user->isSuperRecruteur()){
-                    $ids = array();
-                    foreach($user->getRecruteursEntreprise() as $recruteur){
-                        if (!in_array($recruteur->getId(), $ids)){
-                            $ids[$recruteur->getId()] = $recruteur->getId();
-                        }
-                    }
-                    foreach($user->getEntreprises() as $recruteur){
-                        if (!in_array($recruteur->getId(), $ids)){
-                            $ids[$recruteur->getId()] = $recruteur->getId();
-                        }
-                    }
-
-                    $query = $repository->createQueryBuilder('d')
-                        ->andWhere('d.id IN (:ids)')
-                        //->orderBy('d.name' ,  'ASC')
-                        ->setParameter('ids',$ids)
-                    ;
-                    return $query;
-
-                }elseif($user->isRecruteur())
-                {
-                    $ids = array();
-                    foreach($user->getEntreprises() as $recruteur){
-                        if (!in_array($recruteur->getId(), $ids)){
-                            $ids[$recruteur->getId()] = $recruteur->getId();
-                        }
-                    }
-
-                    $query = $repository->createQueryBuilder('d')
-                        ->andWhere('d.id IN (:ids)')
-                        //->orderBy('d.name' ,  'ASC')
-                        ->setParameter('ids',$ids)
-                    ;
-                    return $query;
-                }else{
-                    return null;
-                }
-            }
-        ]);
+            ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            //'data_class' => Annonce::class,
             'csrf_protection' => true,
         ]);
         $resolver->setRequired([

@@ -96,7 +96,7 @@ class Entreprise
     /**
      * @ORM\OneToMany(targetEntity=Annonce::class, mappedBy="entreprise")
      */
-    private $annonces_entreprise;
+    private Collection $annonces_entreprise;
 
     public function __construct()
     {
@@ -377,7 +377,7 @@ class Entreprise
     }
 
     /**
-     * @return Collection|Annonce[]
+     * @return Collection
      */
     public function getAnnoncesEntreprise(): Collection
     {
