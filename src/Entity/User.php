@@ -657,7 +657,7 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|Annonce[]
+     * @return Collection
      */
     public function getAnnoncesAuteurs(): Collection
     {
@@ -681,5 +681,9 @@ class User implements UserInterface
         }
 
         return $this;
+    }
+
+    public function getRecruteurEntreprise(){
+
     }
 }

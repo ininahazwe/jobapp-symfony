@@ -3,7 +3,6 @@
 namespace App\Controller\Recruteur;
 
 use App\Entity\Annonce;
-use App\Entity\User;
 use App\Form\AnnonceType;
 use App\Repository\AnnonceRepository;
 use Knp\Component\Pager\PaginatorInterface;
@@ -36,9 +35,10 @@ class AnnonceController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         $annonce = new Annonce();
-        $form = $this->createForm(AnnonceType::class ,$annonce);
-
-        //$form = $this->createForm(AnnonceType::class, $annonce);
+        $form = $this->createForm(AnnonceType::class ,$annonce, [
+                'user' => $this->getUser()
+                ]
+            );
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

@@ -2,9 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\Entreprise;
 use App\Entity\User;
 use App\Entity\Dictionnaire;
-use App\Repository\EntrepriseRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -16,20 +16,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AnnonceType extends AbstractType
 {
-    private User $user;
-    private EntrepriseRepository $entrepriseRepository;
-
-
-    public function __construct(User $user, EntrepriseRepository $entrepriseRepository)
-    {
-        $this->user = $user;
-        $this->entrepriseRepository = $entrepriseRepository;
-    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $user = $this->user;
-        $entrepriseRepository = $this->entrepriseRepository;
+        $user = $options['user'];
+
         $builder
             ->add('name', TextType::class)
             ->add('description', TextareaType::class)
@@ -78,19 +69,52 @@ class AnnonceType extends AbstractType
                 }
             ])
             ->add('entreprise', EntityType::class ,[
-                'class' => 'App\Entity\Entreprise',
-                'query_builder' => function($repository) use($entrepriseRepository , $user) {
-                    $query = $entrepriseRepository->filtrerEntrepriseParUtilisateur($user->getId());
+                'class' => Entreprise::class,
+                'query_builder' => function($repository) use($user) {
+                    if ($user->isSuperAdmin() ){
+                        $query = $repository->createQueryBuilder('d')
+                            ->select('d')
+                            ->orderBy('d.name' ,  'ASC');
+                        return $query;
+                    }elseif($user->isSuperRecruteur()){
+                        $ids = array();
+                        foreach($user->getRecruteursEntreprise() as $entreprise){
+                            if (!in_array($entreprise->getId(), $ids)){
+                                $ids[$entreprise->getId()] = $entreprise->getId();
+                            }
+                        }
+                        foreach($user->getEntreprises() as $entreprise){
+                            if (!in_array($entreprise->getId(), $ids)){
+                                $ids[$entreprise->getId()] = $entreprise->getId();
+                            }
+                        }
 
+                        $query = $repository->createQueryBuilder('d')
+                            ->andWhere('d.id IN (:ids)')
+                            ->orderBy('d.name' ,  'ASC')
+                            ->setParameter('ids',$ids)
+                        ;
                     return $query;
-                    /*$query = $repository->createQueryBuilder('d')
-                        ->select('d')
-                        ->where('d.id = 1');
 
-                    return $query;*/
+                    }elseif($user->isRecruteur())
+                    {
+                        $ids = array();
+                        foreach($user->getEntreprises() as $entreprise){
+                            if (!in_array($entreprise->getId(), $ids)){
+                                $ids[$entreprise->getId()] = $entreprise->getId();
+                            }
+                        }
+
+                        $query = $repository->createQueryBuilder('d')
+                            ->andWhere('d.id IN (:ids)')
+                            ->orderBy('d.name' ,  'ASC')
+                            ->setParameter('ids',$ids)
+                        ;
+                        return $query;
+                    }else{
+                        return null;
+                    }
                 }
-
-
             ])
             //->add('auteur')
             ->add('reference')
@@ -125,32 +149,63 @@ class AnnonceType extends AbstractType
             'multiple' => true,
             'expanded' => true,
             'class' => User::class,
+            //'property' => 'firstname',
             'query_builder' => function($repository) use($user) {
-                if ($user->getRoles("ROLE_SUPER_ADMIN_HANDICV")) {
-                    $query = $repository->createQueryBuilder('u')
-                        ->select('u')
-                        ->andWhere('u.id = 5')
-                        ->addOrderBy('u.createdAt', 'ASC')
-                    ;
+                if ($user->isSuperAdmin() ){
+                    $query = $repository->createQueryBuilder('d')
+                        ->select('d');
+                        //->orderBy('d.fullName' ,  'ASC');
+                    return $query;
+                }elseif($user->isSuperRecruteur()){
+                    $ids = array();
+                    foreach($user->getRecruteursEntreprise() as $recruteur){
+                        if (!in_array($recruteur->getId(), $ids)){
+                            $ids[$recruteur->getId()] = $recruteur->getId();
+                        }
+                    }
+                    foreach($user->getEntreprises() as $recruteur){
+                        if (!in_array($recruteur->getId(), $ids)){
+                            $ids[$recruteur->getId()] = $recruteur->getId();
+                        }
+                    }
 
+                    $query = $repository->createQueryBuilder('d')
+                        ->andWhere('d.id IN (:ids)')
+                        //->orderBy('d.name' ,  'ASC')
+                        ->setParameter('ids',$ids)
+                    ;
+                    return $query;
+
+                }elseif($user->isRecruteur())
+                {
+                    $ids = array();
+                    foreach($user->getEntreprises() as $recruteur){
+                        if (!in_array($recruteur->getId(), $ids)){
+                            $ids[$recruteur->getId()] = $recruteur->getId();
+                        }
+                    }
+
+                    $query = $repository->createQueryBuilder('d')
+                        ->andWhere('d.id IN (:ids)')
+                        //->orderBy('d.name' ,  'ASC')
+                        ->setParameter('ids',$ids)
+                    ;
+                    return $query;
                 }else{
-                    $query = $repository->createQueryBuilder('u')
-                        ->select('u')
-                        ->addOrderBy('u.createdAt', 'DESC')
-                    ;
-
+                    return null;
                 }
-                return $query;
-            },
+            }
         ]);
     }
+
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             //'data_class' => Annonce::class,
-            'csrf_protection' => false,
-            'user' => $this->user,
-            'entrepriseRepository' => $this->entrepriseRepository
+            'csrf_protection' => true,
+        ]);
+        $resolver->setRequired([
+            'user',
         ]);
     }
 }
