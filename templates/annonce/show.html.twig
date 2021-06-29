@@ -5,44 +5,49 @@
 {% block body %}
     <main id="main">
     <!-- ======= Breadcrumbs ======= -->
-    <section id="breadcrumbs" class="breadcrumbs">
-        <div class="container">
-            <ol>
-                <li><a href="{{ path('app_home') }}">Home</a></li>
-                <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
-                <li><a href="{{ path('annonce_index') }}">Offres d'emploi</a></li>
-                <li>Lecture</li>
-            </ol>
-            <h1>{{ annonce.name }}</h1>
-        </div>
-    </section><!-- End Breadcrumbs -->
-    <section class="inner-page">
-
-        <div class="container">
-            <h1>{{ annonce.entreprise }} cherche un.e {{ annonce.name }}</h1>
-
-            <div class="portfolio-info">
-                <h3>Project information</h3>
-                <ul>
-                    <li><strong>Titre du poste</strong>: {{ annonce.name }}</li>
-                    <li><strong>Client</strong>: {{ annonce.entreprise }}</li>
-                    <li><strong>Date de publication</strong>: {{ annonce.createdAt|date }}</li>
-                 </ul>
+        <section id="breadcrumbs" class="breadcrumbs">
+            <div class="container">
+                <ol>
+                    <li><a href="{{ path('app_home') }}">Home</a></li>
+                    <li><a href="{{ path('app_profile') }}">Dashboard</a></li>
+                    <li><a href="{{ path('annonce_index') }}">Offres d'emploi</a></li>
+                    <li>Lecture</li>
+                </ol>
+                <h1>{{ annonce.entreprise }} recrute un.e {{ annonce.name }}</h1>
             </div>
-            <div class="portfolio-description">
-                <h2>Description</h2>
-                <p>{{ annonce.description }}</p>
+        </section><!-- End Breadcrumbs -->
+        <section id="portfolio-details" class="portfolio-details">
+            <div class="container">
+
+                <div class="row gy-4">
+
+                    <div class="col-lg-8">
+                        <h2>Description du poste et missions</h2>
+                        {{ annonce.description }}
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="portfolio-info">
+                            {% for entreprise in annonce.entreprise %}
+                                {% if entreprise.logo|length %}
+                                    <img class="card-img-top" style="width:100px" src="{{ asset(entreprise.getUrlLastLogo()) }}" alt="{{ entreprise.getNameLastLogo() }}">
+                                {% endif %}
+                            {% endfor %}
+                            <b>Entreprise:</b> {{ annonce.entreprise }}<br>
+                            <b>Localisation:</b> {{ annonce.location|join('-') }}<br>
+                            <b>Type de contrat:</b> {{ annonce.typeContrat|join('-') }}<br>
+                            <b>Expérience souhaitée:</b> {{ annonce.experience }}<br>
+                            <b>Diplôme requis:</b> {{ annonce.diplome }}
+                        </div>
+                        <div class="portfolio-description">
+                            <b>Date de publication:</b> {{ annonce.createdAt|date('d-m-Y') }}<br>
+                            <b>Date de limite de candidature:</b> {{ annonce.dateLimiteCandidature|date('d-m-Y') }}
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
-            <a class="btn btn-primary" href="{{ path('candidature_new') }}">Envoyer sa candidature</a>
-            {% if is_granted('annonce_edit', annonce) %}
-                {% if annonce.isActive == false %}
-                    {# TODO LINK publication des offres #}
-                    <a href="#">Publier</a>
-                {% endif %}
-                <a href="{{ path('annonce_edit', {'id': annonce.id}) }}">edit</a>
-                {{ include('annonce/_delete_form.html.twig') }}
-            {% endif %}
-        </div>
-    </section>
+        </section><!-- End Portfolio Details Section -->
 </main>
 {% endblock %}

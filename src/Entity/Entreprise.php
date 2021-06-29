@@ -125,7 +125,6 @@ class Entreprise
         $this->name = $name;
     }
 
-
     public function getDescription(): ?string
     {
         return $this->description;
@@ -220,6 +219,7 @@ class Entreprise
 
         return $this;
     }
+
     public function __toString()
     {
         return $this->name;
@@ -404,5 +404,38 @@ class Entreprise
         }
 
         return $this;
+    }
+
+    public function getMaxAnnonoces()
+    {
+        $nombre = null;
+        foreach($this->getOffres() as $offre){
+            if ($offre->isActive()){
+                if ($offre->getNombreOffres() == 0 ){
+                    return 0;
+                }
+                $nombre = $nombre + $offre->getNombreOffres();
+            }
+        }
+        return $nombre;
+    }
+
+    public function getNomberAnnonoces()
+    {
+        $nombre = 0;
+        foreach($this->getAnnoncesEntreprise() as $annonce){
+            if ($annonce->isActive()){
+                $nombre = $nombre + 1;
+            }
+        }
+        return $nombre;
+    }
+
+    public function canCreateAnnonce()
+    {
+        if (($this->getNomberAnnonoces() < $this->getMaxAnnonoces()) || ($this->getMaxAnnonoces() == 0)){
+            return true;
+        }
+        return false;
     }
 }

@@ -111,9 +111,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         if ($user->isSuperAdmin() ){
             $query = $this->createQueryBuilder('d')
-                ->select('d');
+                ->select('d')
+                ->andWhere('d.roles LIKE :roles')
+                ->orWhere('d.roles LIKE :roles2')
+                ->setParameter('roles', "%" . 'ROLE_RECRUTEUR' . "%" )
+                ->setParameter('roles2', "%" . 'ROLE_SUPER_RECRUTEUR' . "%" )
+            ;
             return $query;
-        }elseif ($user->isRecruteur()){
+        }elseif ($user->isRecruteur() || $user->isSuperRecruteur()){
             $ids = array();
             foreach($user->getRecruteursEntreprise() as $entreprise){
                 if (!in_array($entreprise->getId(), $ids)){
@@ -155,44 +160,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ;
             return $query;
         }
-        /*elseif($user->isRecruteur()){
-            $ids = array();
-            foreach($user->getEntreprises() as $entreprise){
-                if (!in_array($entreprise->getId(), $ids)){
-                    $ids[] = $entreprise->getId();
-                }
-            }
 
-            $repositoryEntreprise = $this->getEntityManager()->getRepository('App\Entity\Entreprise')->createQueryBuilder('o');
-            $repositoryEntreprise->andWhere('o.id IN (:ids)')
-                //->orderBy('d.name' ,  'ASC')
-                ->setParameter('ids', $ids);
-            $entreprises = $repositoryEntreprise->getQuery()->getResult();
-
-            $users = array();
-            foreach ($entreprises as $entreprise){
-                //dd($entreprise);
-                foreach($entreprise->getRecruteurs() as $recruteur) {
-                    if (!in_array($recruteur->getId(), $users)) {
-                        $users[] = $recruteur->getId();
-                    }
-                }
-                foreach($entreprise->getSuperRecruteurs() as $recruteur) {
-                    if (!in_array($recruteur->getId(), $users)) {
-                        $users[] = $recruteur->getId();
-                    }
-                }
-            }
-
-            $query = $this->createQueryBuilder('d')
-                ->andWhere('d.id IN (:ids)')
-                //->orderBy('d.name' ,  'ASC')
-                ->setParameter('ids', $users)
-            ;
-            return $query;
-        }else{
-            return null;
-        }
-*/
     }
 }

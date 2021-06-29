@@ -320,4 +320,12 @@ class Annonce
 
         return $this;
     }
+
+    public function isActive()
+    {
+        if ($this->getIsActive() == 1 ){
+            return true;
+        }
+        return false;
+    }
 }

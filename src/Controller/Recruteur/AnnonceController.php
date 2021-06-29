@@ -3,6 +3,8 @@
 namespace App\Controller\Recruteur;
 
 use App\Entity\Annonce;
+use App\Entity\Entreprise;
+use App\Entity\Offre;
 use App\Form\AnnonceType;
 use App\Repository\AnnonceRepository;
 use Knp\Component\Pager\PaginatorInterface;
@@ -27,6 +29,7 @@ class AnnonceController extends AbstractController
 
         return $this->render('annonce/index.html.twig', [
             'annonces' => $annonces,
+            //'entreprises' => $this->getUser()->getEntrepriseAll(),
         ]);
     }
 
@@ -43,10 +46,20 @@ class AnnonceController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $entityManager->persist($annonce);
-            $entityManager->flush();
+            $entreprise = $entityManager->getRepository(Entreprise::class)->find($form->get('entreprise')->getData());
 
-            return $this->redirectToRoute('annonce_index');
+            if($entreprise->canCreateAnnonce()){
+                $entityManager->persist($annonce);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Publication réussie');
+
+                return $this->redirectToRoute('annonce_index');
+            }else{
+                $this->addFlash('warning', 'Vous avez atteint le nombre maximum d\'annonces à publier');
+                return $this->redirectToRoute('annonce_index');
+            }
+
         }
 
         return $this->render('annonce/new.html.twig', [
@@ -76,6 +89,7 @@ class AnnonceController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
+            $this->addFlash('success', 'Mise à jour réussie');
             return $this->redirectToRoute('annonce_index');
         }
 

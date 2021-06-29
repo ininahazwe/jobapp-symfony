@@ -25,6 +25,39 @@ class EntrepriseRepository extends ServiceEntityRepository
         $this->paginator = $paginator;
     }
 
+    public function findAllEntreprise($user)
+    {
+        $query = $this->createQueryBuilder('e');
+        if($user->isSuperAdmin()){
+            $query//->andWhere('a.isActive = true')
+            ->addOrderBy('e.createdAt', 'DESC')
+                ->getQuery();
+
+            return $query;
+        } elseif ($user->isSuperRecruteur() || $user->isRecruteur()){
+            $ids = array();
+            foreach($user->getRecruteursEntreprise() as $entreprise){
+                if (!in_array($entreprise->getId(), $ids)){
+                    $ids[$entreprise->getId()] = $entreprise->getId();
+                }
+            }
+            foreach($user->getEntreprises() as $entreprise){
+                if (!in_array($entreprise->getId(), $ids)){
+                    $ids[$entreprise->getId()] = $entreprise->getId();
+                }
+            }
+
+            $query->andWhere('e.id IN (:entreprises)')
+                ->addOrderBy('e.createdAt', 'DESC')
+                ->setParameter('entreprises', $ids)
+                ->getQuery()
+            ;
+
+            return $query;
+        }
+
+    }
+
     /**
      * @param null $entreprise
      * @return mixed
@@ -142,27 +175,43 @@ class EntrepriseRepository extends ServiceEntityRepository
         $ids = array();
 
         if ($user->isSuperAdmin() ){
-            $query = $this->createQueryBuilder('d')
-                ->select('d')
-                ->orderBy('d.name' ,  'ASC');
-            return $query;
-        }elseif($user->isSuperRecruteur()){
+            $entreprises = $this->findAll();
             $ids = array();
-            foreach($user->getRecruteursEntreprise() as $entreprise){
-                if (!in_array($entreprise->getId(), $ids)){
+            foreach($entreprises as $entreprise) {
+                if ($entreprise->canCreateAnnonce()) {
                     $ids[$entreprise->getId()] = $entreprise->getId();
                 }
             }
-            foreach($user->getEntreprises() as $entreprise){
-                if (!in_array($entreprise->getId(), $ids)){
-                    $ids[$entreprise->getId()] = $entreprise->getId();
+            $query = $this->createQueryBuilder('d')
+                ->select('d')
+                ->andWhere('d.id IN (:ids)')
+                ->orderBy('d.name' ,  'ASC')
+                ->setParameter('ids',$ids);
+            return $query;
+
+        }elseif($user->isSuperRecruteur()){
+            $ids = array();
+            foreach($user->getRecruteursEntreprise() as $entreprise) {
+                if ($entreprise->canCreateAnnonce()){
+                    if (!in_array($entreprise->getId(), $ids)) {
+                        $ids[$entreprise->getId()] = $entreprise->getId();
+                    }
                 }
+            }
+            foreach($user->getEntreprises() as $entreprise) {
+                if ($entreprise->canCreateAnnonce()){
+                    if (!in_array($entreprise->getId(), $ids)) {
+                        $ids[$entreprise->getId()] = $entreprise->getId();
+                    }
+                 }
             }
         }elseif($user->isRecruteur())
         {
             foreach($user->getEntreprises() as $entreprise){
-                if (!in_array($entreprise->getId(), $ids)){
-                    $ids[$entreprise->getId()] = $entreprise->getId();
+                if ($entreprise->canCreateAnnonce()){
+                    if (!in_array($entreprise->getId(), $ids)){
+                        $ids[$entreprise->getId()] = $entreprise->getId();
+                    }
                 }
             }
 

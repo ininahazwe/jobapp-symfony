@@ -37,6 +37,7 @@
                             </tr>
                             </thead>
                             <tbody>
+
                             {% for entreprise in entreprises %}
                                 <tr>
                                     <td><a href="{{ path('entreprise_show', {slug: entreprise.slug})}}">{{ entreprise.name }}</a></td>
@@ -51,7 +52,12 @@
                                     <td>{{ entreprise.zipcode }}</td>
                                     <td>{{ entreprise.secteur }}</td>
                                     <td>
-                                        <a href="{{ path('entreprise_edit', {'id': entreprise.id}) }}">edit</a>
+                                        <a href="{{ path('entreprise_edit', {'id': entreprise.id}) }}">
+                                            <a class="btn btn-sm" href="#"><i class="icon-edit"></i> Edit</a>
+                                        </a>
+                                        {% if app.user.isSuperAdmin() %}
+                                            {{ include('entreprise/_delete_form.html.twig') }}
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% else %}

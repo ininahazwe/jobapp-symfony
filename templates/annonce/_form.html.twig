@@ -1,3 +1,46 @@
+{% form_theme form _self %}
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <b>Description du poste et missions</b>
+            {{ form_row(form.name) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.reference) }}
+            {{ form_row(form.lien) }}
+            {{ form_row(form.dateLimiteCandidature) }}
+            {{ form_row(form.location) }}
+            {{ form_row(form.isActive) }}
+        </div>
+        <div class="col-md-6">
+            <b>Profil du candidat</b>
+            {{ form_row(form.diplome) }}
+            {{ form_row(form.experience) }}
+            {{ form_row(form.type_contrat) }}
+            <br>
+            <b>Recruteur</b>
+            {{ form_row(form.auteur) }}
+            {{ form_row(form.adresse_email) }}
+            <br>
+            <b>Entreprise</b>
+            {{ form_row(form.entreprise) }}
+        </div>
+    </div>
+    <button class="btn btn-primary mt-3">{{ button_label|default('Enregistrer') }}</button>
+</div>
 {{ form_end(form) }}
+{#{% block _annonce_dateLimiteCandidatur_widget %}
+    <div id="annonce_dateLimiteCandidature" class="form-inline">
+        <div class="sr-only"><label class="required" for="annonce_dateLimiteCandidature_time_hour">Date limite candidature</label>
+        </div><input type="date" id="annonce_dateLimiteCandidature_date" name="annonce[dateLimiteCandidature][date]" required="required" class="form-control">
+    </div>
+
+{% endblock %}#}
+<style>
+    #annonce_dateLimiteCandidature_time_hour{
+        display: none;
+    }
+    div.sr-only{
+             display: none;
+         }
+</style>

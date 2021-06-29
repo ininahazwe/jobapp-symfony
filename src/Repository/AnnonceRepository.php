@@ -32,27 +32,18 @@ class AnnonceRepository extends ServiceEntityRepository
                 ->getQuery();
 
             return $query;
-        } elseif ($user->isRecruteur()){
-            $ids = array();
-            foreach($user->getRecruteursEntreprise() as $entreprise){
-                if (!in_array($entreprise->getId(), $ids)){
-                    $ids[$entreprise->getId()] = $entreprise->getId();
-                }
-            }
-            foreach($user->getEntreprises() as $entreprise){
-                if (!in_array($entreprise->getId(), $ids)){
-                    $ids[$entreprise->getId()] = $entreprise->getId();
-                }
-            }
+        } elseif ($user->isSuperRecruteur() || $user->isRecruteur()){
+            $ids = $user->getEntrepriseIds();
             $query->andWhere('a.entreprise IN (:entreprises)')
                 ->addOrderBy('a.createdAt', 'DESC')
                 ->setParameter('entreprises', $ids)
-                ->getQuery();
+                ->getQuery()
+            ;
 
             return $query;
         }
-
     }
+
     /**
      * @return array
      */
@@ -63,6 +54,7 @@ class AnnonceRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
     /**
      * @return QueryBuilder
      */

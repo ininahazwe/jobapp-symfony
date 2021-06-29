@@ -31,7 +31,8 @@ class EntrepriseController extends AbstractController
     #[Route('/', name: 'entreprise_index', methods: ['GET'])]
     public function index(Request $request, EntrepriseRepository $entrepriseRepository, PaginatorInterface $paginator): Response
     {
-        $data = $entrepriseRepository->findAll();
+        $data = $entrepriseRepository->findAllEntreprise($this->getUser());
+
         $entreprises = $paginator->paginate(
             $data,
             $request->query->getInt('page', 1),
@@ -170,15 +171,6 @@ class EntrepriseController extends AbstractController
 
         $entityManager = $this->getDoctrine()->getManager();
         $form = $this->createForm(UserType::class, $user);
-       /* $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $entityManager->persist($user);
-            $entityManager->flush();
-
-            return $this->redirect($this->generateUrl('entreprise_recruteurs'));
-        }*/
 
         $nbMaxRecruteurs = $entityManager->getRepository(Entreprise::class)->getNbMaxRecruteurs($entreprise->getId());
         $nbRecruteurs = count($entreprise->getRecruteurs()) + count($entreprise->getSuperRecruteurs());

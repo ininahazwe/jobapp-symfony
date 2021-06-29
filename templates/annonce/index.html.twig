@@ -18,51 +18,90 @@
     </section><!-- End Breadcrumbs -->
     <section class="inner-page">
         <div class="container">
-            Nombre total : {{ annonces.totalItemCount }}
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Entreprises</th>
-                        <th>Date de publication</th>
-                        <th>Active</th>
-                        <th>actions</th>
+            <div class="row">
+                <div class="col-md-3">
+                    {%  if app.user.isSuperAdmin() %}
+                        <a class="btn btn-primary mb-4" href="{{ path('annonce_new') }}">Créer une offre d'emploi</a>
+                        <div class="p-3 border bg-light">
+                            Nombre total d'annonces : {{ annonces.totalItemCount }}<br>
+                        </div>
+                    {% else %}
+                        {% if app.user.getNbrAnnoncesMaxi() > annonces.totalItemCount %}
+                            <a class="btn btn-primary mb-4" href="{{ path('annonce_new') }}">Créer une offre d'emploi</a><br/>
+                        {% endif %}
+                        <div class="p-3 border bg-light">
+                            <b>Nombre d'annonces publiées : </b>{{ annonces.totalItemCount }}
+                        </div>
+                        {#<div class="p-3 border bg-light">
+                            <b> :</b> {{ app.user.getNbrAnnoncesMaxi() }}
+                        </div>
+                        <div class="p-3 border bg-light">
+                            {{ app.user.getNbrAnnoncesMaxi() }}
+                        </div>#}
+                        <div class="p-3 border bg-light">
+                            {% for entreprise in app.user.getEntrepriseAll() %}
 
-                    </tr>
-                </thead>
-                <tbody>
-                {% for annonce in annonces %}
-                    <tr>
-                        <td><a href="{{ path('annonce_show', {slug: annonce.slug})}}">{{ annonce.name }}</a></td>
-                        <td>{{ annonce.description }}</td>
-                        <td>{{ annonce.entreprise }}</td>
-                        <td>{{ annonce.createdAt|date('d/m/Y') }}</td>
-                        <td>
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="customSwitch1" {{ (annonce.isActive) ? 'checked' : ''}} data-id="{{annonce.id}}">
-                                <label class="custom-control-label" for="customSwitch1">
-                                    {% if annonce.isActive  ? 'checked'%}
-                                    publiée
-                                    {% else %}
-                                       non publiée
-                                    {% endif %}
-                                </label>
-                            </div>
-                        </td>
-                        <td>
-                           <a href="{{ path('annonce_edit', {'id': annonce.id}) }}">edit</a>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="4">no records found</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            {{ knp_pagination_render(annonces, 'Pagination/twitter_bootstrap_v4_pagination.html.twig') }}
-            <a class="btn btn-primary" href="{{ path('annonce_new') }}">Créer une offre d'emploi</a>
+
+                                {{ entreprise.name }} : {{ entreprise.getNomberAnnonoces() }}/{{ entreprise.getMaxAnnonoces() }} Annonces
+
+                                {% if entreprise.canCreateAnnonce() %}
+                                    <a class="btn btn-primary btn-sm mb-1" href="{{ path('annonce_new') }}">Créer une offre d'emploi</a><br/>
+                                {% endif %}
+
+                                {#{%  if not loop.index.last() %}#}
+                                <hr/>
+                                {#{% endif %}#}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <br>
+                </div>
+                <div class="col-md-9">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Entreprises</th>
+                            <th>Date de publication</th>
+                            <th>Active</th>
+                            <th>actions</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for annonce in annonces %}
+                            <tr>
+                                <td><a href="{{ path('annonce_show', {slug: annonce.slug})}}">{{ annonce.name }}</a></td>
+                                <td>{{ annonce.description|slice(0, 250) }}...</td>
+                                <td>{{ annonce.entreprise }}</td>
+                                <td>{{ annonce.createdAt|date('d/m/Y') }}</td>
+                                <td>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="customSwitch1" {{ (annonce.isActive) ? 'checked' : ''}} data-id="{{annonce.id}}">
+                                        <label class="custom-control-label" for="customSwitch1">
+                                            {% if annonce.isActive  ? 'checked'%}
+                                                publiée
+                                            {% else %}
+                                                non publiée
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="{{ path('annonce_edit', {'id': annonce.id}) }}">edit</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4">no records found</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {{ knp_pagination_render(annonces, 'Pagination/twitter_bootstrap_v4_pagination.html.twig') }}
+                </div>
+            </div>
         </div>
     </section>
 </main>

@@ -7,7 +7,9 @@ use App\Entity\User;
 use App\Entity\Dictionnaire;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -24,7 +26,10 @@ class AnnonceType extends AbstractType
         $builder
             ->add('name', TextType::class)
             ->add('description', TextareaType::class)
-            ->add('isActive')
+            ->add('isActive', CheckboxType::class, [
+                'label_attr' => ['class' => 'switch-custom'],
+                'required' => false
+            ])
             ->add('diplome', EntityType::class, [
                 'required'  => true,
                 'label' => 'Diplôme requis',
@@ -106,9 +111,8 @@ class AnnonceType extends AbstractType
                     return $query;
                 }
             ])
-            ->add('adresse_email')
+            ->add('adresse_email', EmailType::class)
             ->add('lien')
-            ->add('Valider', SubmitType::class)
             ;
     }
 

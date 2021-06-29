@@ -371,6 +371,7 @@ class User implements UserInterface
     {
         return $this->getEmail();
     }
+
     public function getOneRecruteurEntreprise(): string
     {
         $result = array();
@@ -664,7 +665,62 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getRecruteurEntreprise(){
+    public function getEntrepriseIds(): array
+    {
+
+        $ids = array();
+        foreach($this->getRecruteursEntreprise() as $entreprise){
+            if (!in_array($entreprise->getId(), $ids)){
+                $ids[$entreprise->getId()] = $entreprise->getId();
+            }
+        }
+        foreach($this->getEntreprises() as $entreprise){
+            if (!in_array($entreprise->getId(), $ids)){
+                $ids[$entreprise->getId()] = $entreprise->getId();
+            }
+        }
+        return $ids;
+    }
+
+    public function getEntrepriseAll(): ArrayCollection
+    {
+
+        $entreprises= new ArrayCollection();
+        foreach($this->getRecruteursEntreprise() as $entreprise){
+            if (!$entreprises->contains($entreprise)){
+                $entreprises->add($entreprise);
+            }
+        }
+        foreach($this->getEntreprises() as $entreprise){
+            if (!$entreprises->contains($entreprise)){
+                $entreprises->add($entreprise);
+            }
+        }
+        return $entreprises;
+    }
+
+    public function getNbrAnnoncesMaxi(): string
+    {
+        $nombres = array();
+        $entreprises = $this->getEntrepriseAll();
+
+        foreach ($entreprises as $entreprise){
+            foreach ($entreprise->getOffres() as $offre){
+                $nombre = null;
+                if ($offre->isActive()){
+                    if ($offre->getNombreOffres() == 0){
+                        $nombre = ' illimité ';
+                    }else{
+                        $nombre = $nombre + $offre->getNombreOffres();
+                    }
+
+                }
+                $nombres[] = $entreprise->getName() . ' : ' .$nombre;
+            }
+        }
+
+        return implode(' - ', $nombres);
 
     }
+
 }

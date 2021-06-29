@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\FileRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -44,6 +46,11 @@ class File
      * @ORM\Column(type="string", length=255)
      */
     private ?string $nameFile;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Annuaire::class, inversedBy="image")
+     */
+    private ?Annuaire $annuaire;
 
     public function getName(): ?string
     {
@@ -113,6 +120,18 @@ class File
     public function setNameFile(string $nameFile): self
     {
         $this->nameFile = $nameFile;
+
+        return $this;
+    }
+
+    public function getAnnuaire(): ?Annuaire
+    {
+        return $this->annuaire;
+    }
+
+    public function setAnnuaire(?Annuaire $annuaire): self
+    {
+        $this->annuaire = $annuaire;
 
         return $this;
     }
