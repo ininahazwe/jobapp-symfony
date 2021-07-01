@@ -29,6 +29,8 @@
                             <div class="col"><div class="p-3 border bg-light"><a href="{{ path('modele_offre_commerciale_index') }}">Modèle offres commerciales</a></div></div>
                             <div class="col"><div class="p-3 border bg-light"><a href="{{ path('facture_index') }}">Factures</a></div></div>
                             <div class="col"><div class="p-3 border bg-light"><a href="{{ path('dictionnaire_index') }}">Dictionnaire</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light"><a href="{{ path('annuaire_index') }}">Annuaire</a></div></div>
+                            <div class="col"><div class="p-3 border bg-light"><a href="{{ path('agenda_index') }}">Agenda</a></div></div>
                         </div>
                         {% endif %}
                         {% if app.user.isSuperRecruteur() %}
@@ -36,7 +38,6 @@
                             <div class="col"><div class="p-3 border bg-light"><a href="{{ path('annonce_index') }}">Annonces</a></div></div>
                             <div class="col"><div class="p-3 border bg-light"><a href="{{ path('candidature_index') }}">Candidatures</a></div></div>
                             <div class="col"><div class="p-3 border bg-light"><a href="{{ path('entreprise_index') }}">Entreprises</a></div></div>
-                            {#<div class="col"><div class="p-3 border bg-light "><a href="{{ path('user_creation') }}">Recruteurs</a></div></div>#}
                         </div>
                         {% endif %}
                         {% if app.user.isRecruteur() %}

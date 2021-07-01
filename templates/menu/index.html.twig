@@ -38,8 +38,8 @@
                         <td>{{ menu.niveau }}</td>
                         <td>{{ menu.type }}</td>
                         <td>
-                            <a href="{{ path('menu_delete', {'id': menu.id}) }}">Delete</a>
                             <a href="{{ path('menu_edit', {'id': menu.id}) }}">edit</a>
+                            <a href="{{ path('menu_delete', {'id': menu.id}) }}">Delete</a>
                         </td>
                     </tr>
                 {% else %}

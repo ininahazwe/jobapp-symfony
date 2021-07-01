@@ -21,7 +21,7 @@ class MenuController extends AbstractController
         $menus = $paginator->paginate(
             $data,
             $request->query->getInt('page', 1),
-            4
+            10
         );
         return $this->render('menu/index.html.twig', [
             'menus' => $menus,
@@ -47,6 +47,8 @@ class MenuController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($menu);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Ajout réussi');
 
             return $this->redirectToRoute('menu_index');
         }
@@ -75,6 +77,8 @@ class MenuController extends AbstractController
 
 
             $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success', 'Mise à jour réussie');
 
             return $this->redirectToRoute('menu_index');
         }

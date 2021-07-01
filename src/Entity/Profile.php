@@ -3,10 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProfileRepository;
-use DateTimeInterface;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints\Date;
+
 
 /**
  * @ORM\Entity(repositoryClass=ProfileRepository::class)
@@ -24,7 +22,7 @@ class Profile
      /**
      * @ORM\Column(type="datetime")
      */
-    private \DateTime $birthdate;
+    private $birthdate;
 
     /**
      * @ORM\Column(type="boolean")
@@ -85,7 +83,6 @@ class Profile
     public function __construct()
     {
         $this->isVisible = false;
-        $this->createdAt = new \DateTimeImmutable('now');
     }
 
     public function getDescription(): ?string
@@ -100,12 +97,12 @@ class Profile
         return $this;
     }
 
-    public function getBirthdate(): ?DateTimeInterface
+    public function getBirthdate()
     {
         return $this->birthdate;
     }
 
-    public function setBirthdate(DateTimeInterface $birthdate): self
+    public function setBirthdate($birthdate): self
     {
         if (isset($birthdate)) {
             $this->birthdate = $birthdate;

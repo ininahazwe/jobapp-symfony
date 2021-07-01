@@ -10,7 +10,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=PageRepository::class)
- * @ORM\Table(name="page", indexes={@ORM\Index(columns={"title", "content"}, flags={"fulltext"})})
  */
 class Page
 {
@@ -63,6 +62,7 @@ class Page
 
     public function __construct()
     {
+        $this->createdAt = new \DateTimeImmutable('now');
         $this->files = new ArrayCollection();
     }
 
@@ -148,6 +148,7 @@ class Page
 
         return $this;
     }
+
 
     /**
      * @return int[]

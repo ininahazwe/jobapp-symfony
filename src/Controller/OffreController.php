@@ -33,6 +33,8 @@ class OffreController extends AbstractController
             $entityManager->persist($entrepriseOffre);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Ajout réussi');
+
             return $this->redirectToRoute('offre_index');
         }
 
@@ -58,6 +60,8 @@ class OffreController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success', 'Mise à jour réussie');
 
             return $this->redirectToRoute('offre_index');
         }

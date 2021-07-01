@@ -43,6 +43,8 @@ class ProfileController extends AbstractController
             $entityManager->persist($profile);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Ajout réussi');
+
             return $this->redirectToRoute('app_profile');
         }
 
@@ -68,6 +70,8 @@ class ProfileController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success', 'Mise à jour réussie');
 
             return $this->redirectToRoute('app_profile');
         }

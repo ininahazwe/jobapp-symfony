@@ -7,6 +7,8 @@ use App\Entity\Page;
 use App\Form\PageType;
 use App\Form\SearchForm;
 use App\Repository\PageRepository;
+use DateTime;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,9 +18,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class PageController extends AbstractController
 {
     #[Route('/', name: 'page_index', methods: ['GET', 'POST'])]
-    public function index(PageRepository $pageRepository, Request $request): Response
+    public function index(PageRepository $pageRepository, Request $request, PaginatorInterface $paginator): Response
     {
-        $pages = $pageRepository->findAll();
+        $data = $pageRepository->findAll();
+
+        $pages = $paginator->paginate(
+            $data,
+            $request->query->getInt('page', 1),
+            10
+        );
 
         $form = $this->createForm(SearchForm::class);
 
@@ -42,14 +50,18 @@ class PageController extends AbstractController
         $page = new Page();
         $form = $this->createForm(PageType::class, $page);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $this->uploadFile($form->get('files')->getData(), $page);
+            if($form->get('files')->getData()){
+                $this->uploadFile($form->get('files')->getData(), $page);
+            }
+
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($page);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Ajout réussi');
 
             return $this->redirectToRoute('page_index');
         }
@@ -76,11 +88,16 @@ class PageController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $this->uploadFile($form->get('files')->getData(), $page);
+            if($form->get('files')->getData()){
+                $this->uploadFile($form->get('files')->getData(), $page);
+            }
+            $page->updateTimestamps();
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($page);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Mise à jour réussie');
 
             return $this->redirectToRoute('page_index');
         }

@@ -16,3 +16,17 @@ a{
   position: sticky;
   top: 20px;
 }
+
+.alert {
+  text-align: center;
+  z-index: 999;
+  position: absolute !important;
+  width: 100%;
+  animation-name: affichage;
+  animation-duration: 3s;
+}
+@keyframes affichage {
+  0% {top: 1%; display: block; opacity: 1;}
+  50% {top: -300px; opacity: 0}
+  100% {opacity: 1; display: none;}
+}

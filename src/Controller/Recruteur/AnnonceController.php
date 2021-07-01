@@ -54,10 +54,10 @@ class AnnonceController extends AbstractController
 
                 $this->addFlash('success', 'Publication réussie');
 
-                return $this->redirectToRoute('annonce_index');
+                return $this->redirectToRoute('annonce_index', [], Response::HTTP_SEE_OTHER);
             }else{
                 $this->addFlash('warning', 'Vous avez atteint le nombre maximum d\'annonces à publier');
-                return $this->redirectToRoute('annonce_index');
+                return $this->redirectToRoute('annonce_index', [], Response::HTTP_SEE_OTHER);
             }
 
         }
@@ -72,6 +72,7 @@ class AnnonceController extends AbstractController
     public function show($slug, AnnonceRepository $annonceRepository, Request $request): Response
     {
         $annonce = $annonceRepository->findOneBy(['slug' => $slug]);
+
         return $this->render('annonce/show.html.twig', [
             'annonce' => $annonce,
         ]);
@@ -87,6 +88,7 @@ class AnnonceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $annonce->updateTimestamps();
             $this->getDoctrine()->getManager()->flush();
 
             $this->addFlash('success', 'Mise à jour réussie');

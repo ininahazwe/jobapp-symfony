@@ -38,12 +38,15 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $this->uploadFile($form->get('files')->getData(), $user);
+            if($form->get('files')->getData()){
+                $this->uploadFile($form->get('files')->getData(), $user);
+            }
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Mise à jour réussie');
             return $this->redirectToRoute('app_profile');
         }
 
@@ -66,7 +69,7 @@ class UserController extends AbstractController
 
             $oldPassword = $request->request->get('oldPass');
             if (!$passwordEncoder->isPasswordValid($user, $oldPassword)){
-                $this->addFlash('message', 'Mot de passe n\'est pas correct');
+                $this->addFlash('warning', 'Mot de passe incorrect');
 
                 return $this->redirectToRoute('pass_modifier');
             }
@@ -75,11 +78,11 @@ class UserController extends AbstractController
             if($request->request->get('password') == $request->request->get('password2')){
                 $user->setPassword($passwordEncoder->encodePassword($user, $request->request->get('password')));
                 $em->flush();
-                $this->addFlash('message', 'Mot de passe mis à jour avec succès');
+                $this->addFlash('success', 'Mise à jour réussie');
 
                 return $this->redirectToRoute('app_profile');
             }else{
-                $this->addFlash('error', 'Les deux mots de passe ne sont pas identiques');
+                $this->addFlash('error', 'Les deux mots de passe doivent être identiques');
             }
         }
 

@@ -18,11 +18,9 @@
     </section><!-- End Breadcrumbs -->
     <section class="inner-page">
         <div class="container">
-            {% for message in app.flashes('info') %}
-                <div class="alert alert-info">{{ message }}</div>
-            {% endfor %}
             <div class="row">
                    <div class="col-md-12">
+                       <a class="btn btn-primary" href="{{ path('entreprise_new') }}">Create new</a>
                         <table class="table">
                             <thead>
                             <tr>
@@ -53,7 +51,7 @@
                                     <td>{{ entreprise.secteur }}</td>
                                     <td>
                                         <a href="{{ path('entreprise_edit', {'id': entreprise.id}) }}">
-                                            <a class="btn btn-sm" href="#"><i class="icon-edit"></i> Edit</a>
+                                            <a href="{{ path('entreprise_edit', {'id': entreprise.id}) }}">edit</a>
                                         </a>
                                         {% if app.user.isSuperAdmin() %}
                                             {{ include('entreprise/_delete_form.html.twig') }}
@@ -68,7 +66,6 @@
                             </tbody>
                         </table>
                         {{ knp_pagination_render(entreprises, 'Pagination/twitter_bootstrap_v4_pagination.html.twig') }}
-                        <a class="btn btn-primary" href="{{ path('entreprise_new') }}">Create new</a>
                     </div>
             </div>
         </div>

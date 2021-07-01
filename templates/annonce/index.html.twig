@@ -23,14 +23,14 @@
                     {%  if app.user.isSuperAdmin() %}
                         <a class="btn btn-primary mb-4" href="{{ path('annonce_new') }}">Créer une offre d'emploi</a>
                         <div class="p-3 border bg-light">
-                            Nombre total d'annonces : {{ annonces.totalItemCount }}<br>
+                            <b>{{ pluralize(annonces|length, 'annonce') }} enregistrées </b>
                         </div>
                     {% else %}
                         {% if app.user.getNbrAnnoncesMaxi() > annonces.totalItemCount %}
                             <a class="btn btn-primary mb-4" href="{{ path('annonce_new') }}">Créer une offre d'emploi</a><br/>
                         {% endif %}
                         <div class="p-3 border bg-light">
-                            <b>Nombre d'annonces publiées : </b>{{ annonces.totalItemCount }}
+                            <b>{{ pluralize(annonces|length, 'annonce') }} enregistrées </b>
                         </div>
                         {#<div class="p-3 border bg-light">
                             <b> :</b> {{ app.user.getNbrAnnoncesMaxi() }}
@@ -40,8 +40,6 @@
                         </div>#}
                         <div class="p-3 border bg-light">
                             {% for entreprise in app.user.getEntrepriseAll() %}
-
-
                                 {{ entreprise.name }} : {{ entreprise.getNomberAnnonoces() }}/{{ entreprise.getMaxAnnonoces() }} Annonces
 
                                 {% if entreprise.canCreateAnnonce() %}

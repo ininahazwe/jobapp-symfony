@@ -40,6 +40,8 @@ class ModeleOffreCommercialeController extends AbstractController
             $entityManager->persist($modeleOffreCommerciale);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Ajout réussi');
+
             return $this->redirectToRoute('modele_offre_commerciale_index');
         }
 
@@ -65,6 +67,8 @@ class ModeleOffreCommercialeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success', 'Mise à jour réussie');
 
             return $this->redirectToRoute('modele_offre_commerciale_index');
         }

@@ -111,7 +111,9 @@ class AnnonceType extends AbstractType
                     return $query;
                 }
             ])
-            ->add('adresse_email', EmailType::class)
+            ->add('adresse_email', EmailType::class, [
+                'required' => false,
+            ])
             ->add('lien')
             ;
     }

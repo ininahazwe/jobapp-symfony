@@ -51,6 +51,9 @@ class EntrepriseController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Route('/new', name: 'entreprise_new', methods: ['GET', 'POST'])]
     public function new(Request $request, ModeleOffreCommercialeRepository $modeleOffreCommercialeRepository, EntrepriseRepository $entrepriseRepository): Response
     {
@@ -71,7 +74,9 @@ class EntrepriseController extends AbstractController
             $modele = $modeleOffreCommercialeRepository->findOneBy(['prix' => '0']);
             $this->saveOffreModele($entreprise->getId(), $modele->getId());
 
-            return $this->redirectToRoute('entreprise_recruteurs', ['id' => $entreprise->getId()] );
+            $this->addFlash('success', 'Ajout réussi');
+
+            return $this->redirectToRoute('entreprise_recruteurs', ['id' => $entreprise->getId()]);
         }
 
         return $this->render('entreprise/new.html.twig', [
@@ -126,6 +131,8 @@ class EntrepriseController extends AbstractController
         }
         $this->saveOffreModele($entreprise->getId(), $modeleId);
 
+        $this->addFlash('success', 'Ajout réussi');
+
         return $this->redirect($this->generateUrl('entreprise_offres_commerciales', ['id'=>$entreprise->getId()]));
     }
 
@@ -139,9 +146,13 @@ class EntrepriseController extends AbstractController
             if ($form->get('logo')->getData()){
                 $this->uploadFile($form->get('logo')->getData(), $entreprise);
             }
+
+            $entreprise->updateTimestamps();
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($entreprise);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Mise à jour réussie');
 
             return $this->redirectToRoute('entreprise_index');
         }
@@ -242,7 +253,8 @@ class EntrepriseController extends AbstractController
 
             $mailer->send($email);
 
-            $this->addFlash('success', 'Le compte a été créé');
+            $this->addFlash('success', 'Ajout réussi');
+
             return $this->redirectToRoute('entreprise_recruteurs',['id' => $entreprise->getId()], Response::HTTP_SEE_OTHER);
         }
 
@@ -326,6 +338,7 @@ class EntrepriseController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash('success', 'La suppression du recruteur '. $user->getFullname() .' a été faite avec succès');
+
         return $this->redirectToRoute('entreprise_recruteurs',['id' => $entreprise->getId()], Response::HTTP_SEE_OTHER);
     }
 

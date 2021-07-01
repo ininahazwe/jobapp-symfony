@@ -1,38 +1,51 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 trait Timestapable
 {
     /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime_immutable")
+     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    private \DateTimeImmutable $createdAt;
+    private $createdAt;
 
     /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    private \DateTime $updatedAt;
+    private $updatedAt;
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt($createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt()
     {
         return $this->updatedAt;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function setUpdatedAt($updatedAt): self
     {
-        return $this->createdAt;
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
-    public function __construct()
+
+    public function updateTimestamps ()
     {
-        $this->createdAt = new \DateTimeImmutable('now');
+        if($this->getCreatedAt() === null){
+            $this->setCreatedAt(new \DateTimeImmutable);
+        }
+        $this->setUpdatedAt(new \DateTimeImmutable);
     }
 }
 

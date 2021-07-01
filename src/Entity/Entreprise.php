@@ -101,7 +101,7 @@ class Entreprise
     public function __construct()
     {
         $this->Offres = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable('now');
         $this->recruteurs = new ArrayCollection();
         $this->super_recruteurs = new ArrayCollection();
         $this->logo = new ArrayCollection();

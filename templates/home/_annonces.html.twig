@@ -13,7 +13,7 @@
                 <div class="icon-box">
                     <div class="icon"><i class="bx bxl-dribbble"></i></div>
                     <h4><a href="{{ path('annonce_show', {slug: annonce.slug})}}">{{ annonce.name }}</a></h4>
-                    <p>{{ annonce.description }}</p>
+                    <p>{{ annonce.description|slice(0, 10) }}</p>
                 </div>
             </div>
             {% endfor %}

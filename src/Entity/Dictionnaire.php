@@ -43,6 +43,7 @@ class Dictionnaire
     const TYPE_FORMATION3 = 'formation3';
     const TYPE_FORMATION4 = 'formation4';
     const TYPE_FORMATION5 = 'formation5';
+    const TYPE_CATEGORIE_ANNUAIRE = 'categorie_annuaire';
 
     use ResourceId;
 
@@ -82,12 +83,18 @@ class Dictionnaire
      */
     private Collection $annonces_location;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Annuaire::class, mappedBy="categorie")
+     */
+    private $annuaires;
+
     public function __construct()
     {
         $this->annonces = new ArrayCollection();
         $this->annonces_experience = new ArrayCollection();
         $this->annonces_type_contrat = new ArrayCollection();
         $this->annonces_location = new ArrayCollection();
+        $this->annuaires = new ArrayCollection();
     }
 
     public function setId($id)
@@ -307,6 +314,7 @@ class Dictionnaire
             Dictionnaire::TYPE_FORMATION3  => 'Formation3',
             Dictionnaire::TYPE_FORMATION4  => 'Formation4',
             Dictionnaire::TYPE_FORMATION5  => 'Formation5',
+            Dictionnaire::TYPE_CATEGORIE_ANNUAIRE  => 'Catégorie annuaire',
         );
     }
 
@@ -419,6 +427,36 @@ class Dictionnaire
     {
         if ($this->annonces_location->removeElement($annoncesLocation)) {
             $annoncesLocation->removeLocation($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Annuaire[]
+     */
+    public function getAnnuaires(): Collection
+    {
+        return $this->annuaires;
+    }
+
+    public function addAnnuaire(Annuaire $annuaire): self
+    {
+        if (!$this->annuaires->contains($annuaire)) {
+            $this->annuaires[] = $annuaire;
+            $annuaire->setCategorie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnnuaire(Annuaire $annuaire): self
+    {
+        if ($this->annuaires->removeElement($annuaire)) {
+            // set the owning side to null (unless already changed)
+            if ($annuaire->getCategorie() === $this) {
+                $annuaire->setCategorie(null);
+            }
         }
 
         return $this;

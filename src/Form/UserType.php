@@ -25,7 +25,7 @@ class UserType extends AbstractType
                 'label' => false,
                 'multiple' => false,
                 'mapped' => false,
-                'required' => false
+                'required' => false,
             ])
         ;
     }

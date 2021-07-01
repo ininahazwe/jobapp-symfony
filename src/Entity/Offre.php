@@ -73,12 +73,13 @@ class Offre
     /**
      * @ORM\OneToMany(targetEntity=Annonce::class, mappedBy="offre")
      */
-    private $annonces;
+    private Collection $annonces;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable('now');
         $this->annonces = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable('now');
+
     }
 
     public function getFormule(): ?string
@@ -289,5 +290,20 @@ class Offre
         }
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function onPrePersist()
+    {
+        $this->setCreatedAt(new \DateTime('now'));
+    }
+    /**
+     * @ORM\PreUpdate()
+     */
+    public function onPreUpdate()
+    {
+        $this->setUpdatedAt(new \DateTime('now'));
     }
 }

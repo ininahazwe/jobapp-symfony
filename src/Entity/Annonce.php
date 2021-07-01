@@ -10,6 +10,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=AnnonceRepository::class)
+ * @ORM\HasLifecycleCallbacks
  */
 class Annonce
 {
@@ -106,10 +107,10 @@ class Annonce
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable('now');
         $this->type_contrat = new ArrayCollection();
         $this->auteur = new ArrayCollection();
         $this->location = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable('now');
     }
 
     public function getName(): ?string

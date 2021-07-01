@@ -28,7 +28,7 @@
     </head>
     <body>
         {{ render(controller('App\\Controller\\HomeController::menuIndex')) }}
-        {{ include('partials/flashbag.html.twig') }}
+        {{ include('partials/messages.html.twig') }}
         {% block body %}
         {% endblock %}
         {{ render(controller('App\\Controller\\HomeController::footerIndex')) }}
